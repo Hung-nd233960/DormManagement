@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block title %}Today — DormChores{% endblock %}
+
+{% block content %}
+<div x-data="{ modalOpen: false }">
+
+  <!-- Top bar -->
+  {% if user.is_admin %}
+  <div class="top-bar">
+    <div class="top-bar-message">
+      <span class="all-done-icon">👁</span> Admin view — log chores via the Admin panel.
+    </div>
+  </div>
+  {% else %}
+  <div class="top-bar">
+    <div class="top-bar-message">
+      {% if pending_count > 0 %}
+        <span class="pending-count">{{ pending_count }}</span>
+        chore{{ 's' if pending_count != 1 }} recommended for you
+      {% else %}
+        <span class="all-done-icon">✓</span> All your recommended chores are done!
+      {% endif %}
+    </div>
+    <button
+      class="btn btn-white {% if pending_count == 0 %}btn-disabled{% endif %}"
+      {% if pending_count > 0 %}@click="modalOpen = true"{% else %}disabled{% endif %}
+    >
+      I did it!
+    </button>
+  </div>
+  {% endif %}
+
+  <!-- Chore catalogue -->
+  <div class="catalogue">
+
+    {% if urgent %}
+    <div class="section">
+      <h2 class="section-title section-title-urgent">🔥 Urgent</h2>
+      <div class="chore-grid">
+        {% for c in urgent %}
+        <div class="chore-card urgent {% if c.done_today %}done{% endif %}">
+          <div class="chore-card-header">
+            <span class="chore-icon">{{ c.chore.icon }}</span>
+            <span class="chore-name">{{ c.chore.name }}</span>
+            {% if c.done_today %}<span class="badge badge-done">Done today</span>{% endif %}
+          </div>
+          <div class="chore-meta">
+            <span class="time-since">
+              {% if c.last_done %}{{ c.last_done | time_ago }}{% else %}never done{% endif %}
+            </span>
+            {% if c.overdue_by > 0 %}
+            <span class="badge badge-overdue">{{ c.overdue_by | fmt_hours }} overdue</span>
+            {% endif %}
+          </div>
+          <div class="chore-rec">
+            {% if c.recommended %}
+            <span class="rec-pill {% if c.is_recommended_me %}rec-me{% endif %}">
+              {% if c.is_recommended_me %}👉 Your turn{% else %}{{ c.recommended.display_name }}'s turn{% endif %}
+            </span>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if routine %}
+    <div class="section">
+      <h2 class="section-title">📋 Routine</h2>
+      <div class="chore-grid">
+        {% for c in routine %}
+        <div class="chore-card routine {% if c.done_today %}done{% endif %}">
+          <div class="chore-card-header">
+            <span class="chore-icon">{{ c.chore.icon }}</span>
+            <span class="chore-name">{{ c.chore.name }}</span>
+            {% if c.done_today %}<span class="badge badge-done">Done today</span>{% endif %}
+          </div>
+          <div class="chore-meta">
+            <span class="time-since">
+              {% if c.last_done %}{{ c.last_done | time_ago }}{% else %}never done{% endif %}
+            </span>
+            <span class="time-limit">/ {{ c.chore.limit_hours | fmt_hours }} limit</span>
+          </div>
+          <div class="chore-rec">
+            {% if c.recommended %}
+            <span class="rec-pill {% if c.is_recommended_me %}rec-me{% endif %}">
+              {% if c.is_recommended_me %}👉 Your turn{% else %}{{ c.recommended.display_name }}'s turn{% endif %}
+            </span>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if not urgent and not routine %}
+    <div class="empty-state">
+      <div class="empty-icon">✨</div>
+      <p>No chores configured yet. Ask your admin to add some!</p>
+    </div>
+    {% endif %}
+
+  </div><!-- /catalogue -->
+
+  <!-- Modal -->
+  <div class="modal-overlay" x-show="modalOpen" x-cloak @keydown.escape.window="modalOpen = false">
+    <div class="modal-card" @click.stop>
+      <div class="modal-header">
+        <h2>What did you do?</h2>
+        <button class="modal-close" @click="modalOpen = false">✕</button>
+      </div>
+      <div class="modal-body">
+
+        {% if my_rec_urgent %}
+        <div class="modal-section-label">Recommended — Urgent</div>
+        {% for c in my_rec_urgent %}
+        <form method="POST" action="/chores/log">
+          <input type="hidden" name="chore_id" value="{{ c.chore.id }}">
+          <button type="submit" class="chore-option urgent">
+            <span class="chore-option-icon">{{ c.chore.icon }}</span>
+            <div class="chore-option-info">
+              <span class="chore-option-name">{{ c.chore.name }}</span>
+              <span class="chore-option-meta">{{ c.overdue_by | fmt_hours }} overdue</span>
+            </div>
+            <span class="chore-option-arrow">→</span>
+          </button>
+        </form>
+        {% endfor %}
+        {% endif %}
+
+        {% if my_rec_routine %}
+        <div class="modal-section-label">Recommended — Routine</div>
+        {% for c in my_rec_routine %}
+        <form method="POST" action="/chores/log">
+          <input type="hidden" name="chore_id" value="{{ c.chore.id }}">
+          <button type="submit" class="chore-option routine">
+            <span class="chore-option-icon">{{ c.chore.icon }}</span>
+            <div class="chore-option-info">
+              <span class="chore-option-name">{{ c.chore.name }}</span>
+              <span class="chore-option-meta">
+                {% if c.last_done %}{{ c.last_done | time_ago }}{% else %}never done{% endif %}
+              </span>
+            </div>
+            <span class="chore-option-arrow">→</span>
+          </button>
+        </form>
+        {% endfor %}
+        {% endif %}
+
+        {% if my_rec_urgent or my_rec_routine %}
+        <div class="modal-divider"></div>
+        <form method="POST" action="/chores/log-all">
+          <button type="submit" class="chore-option all-recommended">
+            <span class="chore-option-icon">⚡</span>
+            <div class="chore-option-info">
+              <span class="chore-option-name">I've done all my recommended tasks</span>
+              <span class="chore-option-meta">Log all {{ (my_rec_urgent | length) + (my_rec_routine | length) }} at once</span>
+            </div>
+            <span class="chore-option-arrow">→</span>
+          </button>
+        </form>
+        {% endif %}
+
+        {% if other_chores %}
+        <div class="modal-section-label muted">Other chores (went above &amp; beyond)</div>
+        {% for c in other_chores %}
+        <form method="POST" action="/chores/log">
+          <input type="hidden" name="chore_id" value="{{ c.chore.id }}">
+          <button type="submit" class="chore-option other">
+            <span class="chore-option-icon">{{ c.chore.icon }}</span>
+            <div class="chore-option-info">
+              <span class="chore-option-name">{{ c.chore.name }}</span>
+              <span class="chore-option-meta">
+                {{ c.recommended.display_name if c.recommended else '—' }}'s turn
+                {% if c.last_done %} · {{ c.last_done | time_ago }}{% endif %}
+              </span>
+            </div>
+            <span class="chore-option-arrow">→</span>
+          </button>
+        </form>
+        {% endfor %}
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}History — DormChores{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-row">
+    <div>
+      <h1>History</h1>
+      {% if mode == 'list' %}
+      <p class="page-subtitle">{{ total }} total logs — page {{ page }} of {{ total_pages }}</p>
+      {% else %}
+      <p class="page-subtitle">{{ month_name }}</p>
+      {% endif %}
+    </div>
+    <div class="mode-toggle">
+      <a href="/history?mode=list"
+         class="btn btn-sm {% if mode == 'list' %}btn-primary{% else %}btn-secondary{% endif %}">
+        ☰ List
+      </a>
+      <a href="/history?mode=calendar"
+         class="btn btn-sm {% if mode == 'calendar' %}btn-primary{% else %}btn-secondary{% endif %}">
+        📅 Calendar
+      </a>
+    </div>
+  </div>
+</div>
+
+{% if mode == 'list' %}
+
+  {% if not logs %}
+  <div class="empty-state">
+    <div class="empty-icon">📜</div>
+    <p>No chores logged yet. Get to work!</p>
+  </div>
+  {% else %}
+  <div class="history-list">
+    {% for log in logs %}
+    <div class="history-item">
+      {% if log.member %}
+      <img src="/avatar/{{ log.member.id }}" class="history-avatar" alt="{{ log.member.display_name }}">
+      {% else %}
+      <div class="history-avatar history-avatar-fallback">
+        {{ log.logged_member_name[0] | upper if log.logged_member_name else '?' }}
+      </div>
+      {% endif %}
+      <div class="history-info">
+        <div class="history-who">
+          {{ log.member.display_name if log.member else (log.logged_member_name or 'Unknown') }}
+        </div>
+        <div class="history-what">
+          {{ (log.chore.icon + ' ' + log.chore.name) if log.chore else (log.logged_chore_name or 'Unknown chore') }}
+          {% if log.note %}<span class="history-note">— {{ log.note }}</span>{% endif %}
+        </div>
+      </div>
+      <div class="history-time">
+        <div class="history-date">{{ log.logged_at.strftime('%b %d') }}</div>
+        <div class="history-clock">{{ log.logged_at.strftime('%H:%M') }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if total_pages > 1 %}
+  <div class="pagination">
+    {% if page > 1 %}
+    <a href="/history?mode=list&page={{ page - 1 }}" class="btn btn-secondary btn-sm">← Newer</a>
+    {% endif %}
+    <span class="page-info">Page {{ page }} / {{ total_pages }}</span>
+    {% if page < total_pages %}
+    <a href="/history?mode=list&page={{ page + 1 }}" class="btn btn-secondary btn-sm">Older →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+  {% endif %}
+
+{% else %}
+
+  <!-- Calendar mode -->
+  <div class="cal-nav">
+    <a href="/history?mode=calendar&year={{ prev_year }}&month={{ prev_month }}" class="btn btn-secondary btn-sm">← Prev</a>
+    <span class="cal-month-title">{{ month_name }}</span>
+    <a href="/history?mode=calendar&year={{ next_year }}&month={{ next_month }}" class="btn btn-secondary btn-sm">Next →</a>
+  </div>
+
+  <div class="cal-wrap">
+    <div class="cal-grid">
+      {% for dow in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] %}
+      <div class="cal-dow">{{ dow }}</div>
+      {% endfor %}
+
+      {% for week in calendar_weeks %}
+      {% for day in week %}
+      <div class="cal-cell {% if day == 0 %}cal-empty{% endif %} {% if day == today_day %}cal-today{% endif %}">
+        {% if day > 0 %}
+        <div class="cal-day-num">{{ day }}</div>
+        <div class="cal-entries">
+          {% for log in logs_by_day.get(day, []) %}
+          <div class="cal-entry" title="{{ (log.member.display_name if log.member else log.logged_member_name) }} · {{ (log.chore.icon + ' ' + log.chore.name) if log.chore else log.logged_chore_name }} · {{ log.logged_at.strftime('%H:%M') }}">
+            <span class="cal-avatar">{{ (log.member.display_name[0] | upper) if log.member else (log.logged_member_name[0] | upper if log.logged_member_name else '?') }}</span>
+            <span class="cal-chore-icon">{{ log.chore.icon if log.chore else '?' }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+
+{% endif %}
+{% endblock %}

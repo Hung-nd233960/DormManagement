@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Tally — DormChores{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Tally</h1>
+  <p class="page-subtitle">Lifetime chore counts for all members</p>
+</div>
+
+{% if not members or not chores %}
+<div class="empty-state">
+  <div class="empty-icon">📊</div>
+  <p>No data yet. Start logging chores!</p>
+</div>
+{% else %}
+
+{# ── Desktop: chore rows × member columns ── #}
+<div class="tally-wrap tally-desktop-wrap">
+  <table class="tally-table">
+    <thead>
+      <tr>
+        <th class="tally-chore-col">Chore</th>
+        {% for member in members %}
+        <th class="tally-member-col {% if not member.is_active %}muted{% endif %}">
+          <img src="/avatar/{{ member.id }}" class="member-avatar" alt="{{ member.display_name }}">
+          <div class="member-name">{{ member.display_name }}</div>
+          {% if not member.is_active %}<div class="badge badge-inactive">Inactive</div>{% endif %}
+        </th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for chore in chores %}
+      <tr>
+        <td class="tally-chore-name"><span>{{ chore.icon }}</span> {{ chore.name }}</td>
+        {% for member in members %}
+        {% set count = matrix[member.id][chore.id] %}
+        {% set chore_total = chore_totals[chore.id] %}
+        <td class="tally-cell {% if not member.is_active %}muted{% endif %}">
+          <div class="tally-count">{{ count }}</div>
+          {% if count > 0 and chore_total > 0 %}
+          <div class="tally-bar-wrap">
+            <div class="tally-bar" style="width: {{ (count / chore_total * 100) | round(1) }}%"></div>
+          </div>
+          {% endif %}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr class="tally-footer">
+        <td><strong>Total</strong></td>
+        {% for member in members %}
+        <td class="tally-cell {% if not member.is_active %}muted{% endif %}">
+          <strong>{{ totals[member.id] }}</strong>
+        </td>
+        {% endfor %}
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+{# ── Mobile: member rows × chore columns ── #}
+<div class="tally-wrap tally-mobile-wrap">
+  <table class="tally-table">
+    <thead>
+      <tr>
+        <th class="tally-mob-member-col">Member</th>
+        {% for chore in chores %}
+        <th class="tally-mob-chore-col">
+          <div class="tally-mob-chore-header">
+            <span class="tally-mob-chore-icon">{{ chore.icon }}</span>
+            <span class="tally-mob-chore-name">{{ chore.name }}</span>
+          </div>
+        </th>
+        {% endfor %}
+        <th class="tally-mob-total-col">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for member in members %}
+      <tr class="{% if not member.is_active %}muted{% endif %}">
+        <td class="tally-mob-member-cell">
+          <div class="tally-mob-member-row">
+            <img src="/avatar/{{ member.id }}" class="member-avatar-sm" alt="{{ member.display_name }}">
+            <span class="tally-mob-member-name">{{ member.display_name }}</span>
+          </div>
+          {% if not member.is_active %}
+          <div class="badge badge-inactive" style="margin-top:3px">Inactive</div>
+          {% endif %}
+        </td>
+        {% for chore in chores %}
+        {% set count = matrix[member.id][chore.id] %}
+        {% set chore_total = chore_totals[chore.id] %}
+        <td class="tally-cell">
+          <div class="tally-count">{{ count }}</div>
+          {% if count > 0 and chore_total > 0 %}
+          <div class="tally-bar-wrap">
+            <div class="tally-bar" style="width: {{ (count / chore_total * 100) | round(1) }}%"></div>
+          </div>
+          {% endif %}
+        </td>
+        {% endfor %}
+        <td class="tally-cell tally-mob-total-cell">
+          <strong>{{ totals[member.id] }}</strong>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endif %}
+{% endblock %}

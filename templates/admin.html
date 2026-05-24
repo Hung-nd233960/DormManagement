@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+{% block title %}Admin — DormChores{% endblock %}
+
+{% block content %}
+<div x-data="{
+  resetMemberId: null,
+  editChoreId: null,
+  editChoreName: '',
+  editChoreIcon: '',
+  editChoreHours: 0
+}">
+
+<div class="page-header">
+  <h1>Admin Panel</h1>
+</div>
+
+<!-- ===== MEMBERS ===== -->
+<div class="admin-section">
+  <h2>Members</h2>
+
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Username</th>
+          <th>Status</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for member in members %}
+        <tr class="{% if not member.is_active %}row-inactive{% endif %}">
+          <td class="member-name-cell">
+            <img src="/avatar/{{ member.id }}" class="member-avatar-sm" alt="{{ member.display_name }}">
+            {{ member.display_name }}
+          </td>
+          <td><code>{{ member.username }}</code></td>
+          <td>
+            {% if member.is_active %}
+            <span class="badge badge-active">Active</span>
+            {% else %}
+            <span class="badge badge-inactive">Inactive</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if member.is_admin %}
+            <span class="badge badge-admin">Admin</span>
+            {% endif %}
+            {% if member.is_sentinel %}
+            <span class="badge badge-sentinel">Sentinel</span>
+            {% endif %}
+          </td>
+          <td class="action-cell">
+            {% if member.id != user.id %}
+            <form method="POST" action="/admin/members/{{ member.id }}/toggle-active" style="display:inline">
+              <button type="submit" class="btn btn-secondary btn-xs">
+                {{ 'Deactivate' if member.is_active else 'Activate' }}
+              </button>
+            </form>
+            {% endif %}
+
+            <button class="btn btn-secondary btn-xs"
+              @click="resetMemberId = {{ member.id }}">
+              Reset PW
+            </button>
+
+            {% if member.is_admin and member.id != user.id %}
+            <form method="POST" action="/admin/members/{{ member.id }}/toggle-sentinel" style="display:inline">
+              <button type="submit" class="btn btn-secondary btn-xs"
+                title="{{ 'Remove sentinel role' if member.is_sentinel else 'Make sentinel (read-only admin)' }}">
+                {{ '🔒 Unsentinel' if member.is_sentinel else '🔒 Sentinel' }}
+              </button>
+            </form>
+            {% endif %}
+
+            {% if member.id != user.id %}
+            <form method="POST" action="/admin/members/{{ member.id }}/remove" style="display:inline"
+              onsubmit="return confirm('Remove {{ member.display_name }}? Their logs will be preserved.')">
+              <button type="submit" class="btn btn-danger btn-xs">Remove</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add member form -->
+  <details class="expandable">
+    <summary class="expandable-trigger">+ Add Member</summary>
+    <form method="POST" action="/admin/members" class="inline-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Username</label>
+          <input name="username" required placeholder="e.g. alice">
+        </div>
+        <div class="form-group">
+          <label>Display Name</label>
+          <input name="display_name" required placeholder="e.g. Alice">
+        </div>
+        <div class="form-group">
+          <label>Temp Password</label>
+          <input name="password" type="password" required minlength="6">
+        </div>
+        <div class="form-group form-group-action">
+          <label>&nbsp;</label>
+          <button type="submit" class="btn btn-primary">Add Member</button>
+        </div>
+      </div>
+    </form>
+  </details>
+</div>
+
+<!-- ===== CHORES ===== -->
+<div class="admin-section">
+  <h2>Chores</h2>
+
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Icon</th>
+          <th>Name</th>
+          <th>Limit</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for chore in chores %}
+        <tr class="{% if not chore.is_active %}row-inactive{% endif %}">
+          <td class="chore-icon-cell">{{ chore.icon }}</td>
+          <td>{{ chore.name }}</td>
+          <td>{{ chore.limit_hours }}h</td>
+          <td>
+            {% if chore.is_active %}
+            <span class="badge badge-active">Active</span>
+            {% else %}
+            <span class="badge badge-inactive">Inactive</span>
+            {% endif %}
+          </td>
+          <td class="action-cell">
+            <button class="btn btn-secondary btn-xs"
+              @click="editChoreId = {{ chore.id }}; editChoreName = '{{ chore.name | replace("'", "\\'") }}'; editChoreIcon = '{{ chore.icon }}'; editChoreHours = {{ chore.limit_hours }}">
+              Edit
+            </button>
+            <form method="POST" action="/admin/chores/{{ chore.id }}/toggle" style="display:inline">
+              <button type="submit" class="btn btn-secondary btn-xs">
+                {{ 'Deactivate' if chore.is_active else 'Activate' }}
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add chore -->
+  <details class="expandable">
+    <summary class="expandable-trigger">+ Add Chore</summary>
+    <form method="POST" action="/admin/chores" class="inline-form">
+      <div class="form-row">
+        <div class="form-group form-group-icon">
+          <label>Icon</label>
+          <input name="icon" placeholder="🧹" maxlength="4" value="🧹">
+        </div>
+        <div class="form-group">
+          <label>Name</label>
+          <input name="name" required placeholder="e.g. Vacuum floors">
+        </div>
+        <div class="form-group form-group-hours">
+          <label>Limit (hours)</label>
+          <input name="limit_hours" type="number" required min="1" placeholder="48">
+        </div>
+        <div class="form-group form-group-action">
+          <label>&nbsp;</label>
+          <button type="submit" class="btn btn-primary">Add Chore</button>
+        </div>
+      </div>
+    </form>
+  </details>
+</div>
+
+<!-- ===== OVERRIDE LOG ===== -->
+<div class="admin-section">
+  <h2>Log on Behalf</h2>
+  <form method="POST" action="/admin/log-on-behalf" class="inline-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Member</label>
+        <select name="member_id" required>
+          {% for m in active_members %}
+          <option value="{{ m.id }}">{{ m.display_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Chore</label>
+        <select name="chore_id" required>
+          {% for c in active_chores %}
+          <option value="{{ c.id }}">{{ c.icon }} {{ c.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group form-group-action">
+        <label>&nbsp;</label>
+        <button type="submit" class="btn btn-primary">Log It</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- ===== RESET PASSWORD MODAL ===== -->
+<div class="modal-overlay" x-show="resetMemberId !== null" x-cloak @keydown.escape.window="resetMemberId = null">
+  <div class="modal-card modal-sm" @click.stop>
+    <div class="modal-header">
+      <h2>Reset Password</h2>
+      <button class="modal-close" @click="resetMemberId = null">✕</button>
+    </div>
+    <div class="modal-body">
+      <template x-if="resetMemberId !== null">
+        <form :action="'/admin/members/' + resetMemberId + '/reset-password'" method="POST">
+          <div class="form-group">
+            <label>New Temporary Password</label>
+            <input name="new_password" type="password" required minlength="6" autofocus>
+          </div>
+          <p class="hint">User will be required to change this on next login.</p>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" @click="resetMemberId = null">Cancel</button>
+            <button type="submit" class="btn btn-primary">Reset Password</button>
+          </div>
+        </form>
+      </template>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EDIT CHORE MODAL ===== -->
+<div class="modal-overlay" x-show="editChoreId !== null" x-cloak @keydown.escape.window="editChoreId = null">
+  <div class="modal-card modal-sm" @click.stop>
+    <div class="modal-header">
+      <h2>Edit Chore</h2>
+      <button class="modal-close" @click="editChoreId = null">✕</button>
+    </div>
+    <div class="modal-body">
+      <template x-if="editChoreId !== null">
+        <form :action="'/admin/chores/' + editChoreId + '/edit'" method="POST">
+          <div class="form-group">
+            <label>Icon</label>
+            <input name="icon" x-model="editChoreIcon" maxlength="4">
+          </div>
+          <div class="form-group">
+            <label>Name</label>
+            <input name="name" x-model="editChoreName" required>
+          </div>
+          <div class="form-group">
+            <label>Limit (hours)</label>
+            <input name="limit_hours" type="number" x-model="editChoreHours" required min="1">
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" @click="editChoreId = null">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </template>
+    </div>
+  </div>
+</div>
+
+</div><!-- x-data -->
+{% endblock %}

@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.python-version
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# uv
+# uv.lock is intentionally committed — it locks the exact dependency tree.
+
+# Data — database and uploaded avatars must NOT be committed
+data/*
+!data/.gitkeep
+
+# Secrets
+.env
+*.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

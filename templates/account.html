@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Account — DormChores{% endblock %}
+
+{% block content %}
+<div class="account-page">
+  <h2 class="page-title">Account</h2>
+
+  <!-- Avatar section -->
+  <div class="account-avatar-section">
+    <img src="/avatar/{{ user.id }}" class="account-avatar-img" alt="{{ user.display_name }}">
+    <div class="account-avatar-info">
+      <div class="account-display-name">{{ user.display_name }}</div>
+      <div class="account-username text-muted">@{{ user.username }}</div>
+      {% if user.is_admin %}
+      <div class="account-badge badge-admin">Admin{% if user.is_sentinel %} · Sentinel{% endif %}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Avatar upload -->
+  <div class="account-section">
+    <h3 class="account-section-title">Profile Picture</h3>
+    <form method="POST" action="/account/avatar" enctype="multipart/form-data" class="account-form">
+      <div class="form-group">
+        <label for="avatar">Upload image (JPG, PNG, WebP, GIF · max 5 MB)</label>
+        <input id="avatar" name="avatar" type="file" accept="image/*">
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm">Upload</button>
+    </form>
+    {% if has_avatar %}
+    <form method="POST" action="/account/avatar/remove" style="margin-top:0.5rem">
+      <button type="submit" class="btn btn-ghost btn-sm text-danger">Remove picture</button>
+    </form>
+    {% endif %}
+  </div>
+
+  <!-- Username change -->
+  <div class="account-section">
+    <h3 class="account-section-title">Username</h3>
+    <form method="POST" action="/account/username" class="account-form">
+      <div class="form-group">
+        <label for="new_username">New username</label>
+        <input id="new_username" name="new_username" type="text"
+          value="{{ user.username }}" maxlength="50"
+          pattern="^[a-z0-9_]{1,50}$"
+          title="Lowercase letters, numbers, underscores only">
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm">Save username</button>
+    </form>
+  </div>
+
+  <!-- Password change -->
+  <div class="account-section">
+    <h3 class="account-section-title">Password</h3>
+    <a href="/change-password" class="btn btn-secondary btn-sm">Change password</a>
+  </div>
+
+  <!-- Active status (non-admin only) -->
+  {% if not user.is_admin %}
+  <div class="account-section">
+    <h3 class="account-section-title">Status</h3>
+    <p class="text-muted" style="margin-bottom:0.5rem">
+      You are currently
+      <strong>{{ 'active' if user.is_active else 'inactive' }}</strong>.
+      Inactive members are excluded from chore recommendations.
+    </p>
+    <form method="POST" action="/auth/toggle-active">
+      <button type="submit" class="btn {% if user.is_active %}btn-secondary{% else %}btn-primary{% endif %} btn-sm">
+        {{ 'Mark me inactive' if user.is_active else 'Mark me active' }}
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
+  <!-- Logout -->
+  <div class="account-section">
+    <form method="POST" action="/auth/logout">
+      <button type="submit" class="btn btn-ghost btn-sm text-danger">Logout</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

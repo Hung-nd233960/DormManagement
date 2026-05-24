@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dorm Chores{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script>
+    if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+    function toggleTheme() {
+      var dark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    }
+  </script>
+  <script defer src="/static/js/alpine.min.js"></script>
+</head>
+<body>
+
+{% if request.url.path not in ['/login', '/change-password'] %}
+<nav class="nav">
+  <div class="nav-inner">
+    <span class="nav-brand">🏠 DormChores</span>
+    <div class="nav-links">
+      <a href="/today" class="nav-link {% if request.url.path == '/today' %}active{% endif %}">Today</a>
+      <a href="/tally" class="nav-link {% if request.url.path == '/tally' %}active{% endif %}">Tally</a>
+      <a href="/history" class="nav-link {% if request.url.path == '/history' %}active{% endif %}">History</a>
+      {% if user and user.is_admin %}
+      <a href="/admin" class="nav-link {% if request.url.path.startswith('/admin') %}active{% endif %}">Admin</a>
+      {% endif %}
+    </div>
+    <div class="nav-right">
+      <button class="btn btn-ghost btn-sm theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+        <span class="icon-moon">🌙</span>
+        <span class="icon-sun">☀️</span>
+      </button>
+      {% if user %}
+      <a href="/account" class="nav-avatar-link" title="{{ user.display_name }}">
+        <img src="/avatar/{{ user.id }}" class="nav-avatar" alt="{{ user.display_name }}">
+        <span class="nav-user">{{ user.display_name }}</span>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+{% endif %}
+
+<main class="main">
+  {% for f in flashes %}
+  <div class="flash flash-{{ f.category }}">{{ f.message }}</div>
+  {% endfor %}
+
+  {% block content %}{% endblock %}
+</main>
+
+{% if request.url.path not in ['/login', '/change-password'] %}
+<nav class="bottom-nav">
+  <a href="/today" class="bottom-nav-item {% if request.url.path == '/today' %}active{% endif %}">
+    <span class="bottom-nav-icon">🏠</span>
+    <span class="bottom-nav-label">Today</span>
+  </a>
+  <a href="/tally" class="bottom-nav-item {% if request.url.path == '/tally' %}active{% endif %}">
+    <span class="bottom-nav-icon">📊</span>
+    <span class="bottom-nav-label">Tally</span>
+  </a>
+  <a href="/history" class="bottom-nav-item {% if request.url.path == '/history' %}active{% endif %}">
+    <span class="bottom-nav-icon">📜</span>
+    <span class="bottom-nav-label">History</span>
+  </a>
+  {% if user and user.is_admin %}
+  <a href="/admin" class="bottom-nav-item {% if request.url.path.startswith('/admin') %}active{% endif %}">
+    <span class="bottom-nav-icon">⚙️</span>
+    <span class="bottom-nav-label">Admin</span>
+  </a>
+  {% endif %}
+  {% if user %}
+  <a href="/account" class="bottom-nav-item {% if request.url.path == '/account' %}active{% endif %}">
+    <img src="/avatar/{{ user.id }}" class="bottom-nav-avatar" alt="{{ user.display_name }}">
+    <span class="bottom-nav-label">Account</span>
+  </a>
+  {% endif %}
+</nav>
+{% endif %}
+
+</body>
+</html>
