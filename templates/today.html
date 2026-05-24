@@ -45,6 +45,7 @@
             <span class="time-since">
               {% if c.last_done %}{{ c.last_done | time_ago }}{% else %}{{ _("never done") }}{% endif %}
             </span>
+            <span class="time-limit">/ {{ c.chore.limit_hours | fmt_hours }} {{ _("limit") }}</span>
             {% if c.overdue_by > 0 %}
             <span class="badge badge-overdue">{{ c.overdue_by | fmt_hours }} {{ _("overdue") }}</span>
             {% endif %}
