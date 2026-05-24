@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from ..database import get_db, AVATAR_DIR
 from ..dependencies import require_user, require_session_user
 from ..models import Member
+from ..i18n import _, SUPPORTED
 
 router = APIRouter()
 templates: Jinja2Templates = None
@@ -79,6 +80,7 @@ async def account_page(request: Request, user: Member = Depends(require_user)):
             "user": user,
             "flashes": get_flashes(request),
             "has_avatar": has_avatar,
+            "supported_languages": SUPPORTED,
         }
     )
 
@@ -94,17 +96,17 @@ async def change_username(
 ):
     new_username = new_username.strip().lower()
     if not re.match(r"^[a-z0-9_]{1,50}$", new_username):
-        flash(request, "Username must be 1–50 lowercase letters, numbers, or underscores.", "error")
+        flash(request, _("Username must be 1–50 lowercase letters, numbers, or underscores."), "error")
         return RedirectResponse(url="/account", status_code=302)
     if new_username == user.username:
-        flash(request, "That's already your username.", "info")
+        flash(request, _("That's already your username."), "info")
         return RedirectResponse(url="/account", status_code=302)
     if db.query(Member).filter(Member.username == new_username).first():
-        flash(request, f"'{new_username}' is already taken.", "error")
+        flash(request, _("'%(username)s' is already taken.") % {"username": new_username}, "error")
         return RedirectResponse(url="/account", status_code=302)
     user.username = new_username
     db.commit()
-    flash(request, "Username updated.", "success")
+    flash(request, _("Username updated."), "success")
     return RedirectResponse(url="/account", status_code=302)
 
 
@@ -118,7 +120,7 @@ async def upload_avatar(
 ):
     content_type = avatar.content_type or ""
     if not content_type.startswith("image/"):
-        flash(request, "Please upload an image file.", "error")
+        flash(request, _("Please upload an image file."), "error")
         return RedirectResponse(url="/account", status_code=302)
 
     ext = content_type.split("/")[-1]
@@ -129,7 +131,7 @@ async def upload_avatar(
 
     content = await avatar.read()
     if len(content) > 5 * 1024 * 1024:
-        flash(request, "Image must be under 5 MB.", "error")
+        flash(request, _("Image must be under 5 MB."), "error")
         return RedirectResponse(url="/account", status_code=302)
 
     for old_ext in ("jpg", "jpeg", "png", "webp", "gif"):
@@ -138,7 +140,7 @@ async def upload_avatar(
             old.unlink()
 
     (AVATAR_DIR / f"{user.id}.{ext}").write_bytes(content)
-    flash(request, "Profile picture updated.", "success")
+    flash(request, _("Profile picture updated."), "success")
     return RedirectResponse(url="/account", status_code=302)
 
 
@@ -150,5 +152,22 @@ async def remove_avatar(request: Request, user: Member = Depends(require_user)):
         if p.exists():
             p.unlink()
             removed = True
-    flash(request, "Profile picture removed." if removed else "No picture to remove.", "info")
+    flash(request, _("Profile picture removed.") if removed else _("No picture to remove."), "info")
+    return RedirectResponse(url="/account", status_code=302)
+
+
+@router.post("/account/language")
+async def change_language(
+    request: Request,
+    lang: str = Form(...),
+    user: Member = Depends(require_user),
+    db: Session = Depends(get_db),
+):
+    if lang not in SUPPORTED:
+        flash(request, _("Invalid language."), "error")
+        return RedirectResponse(url="/account", status_code=302)
+    user.language = lang
+    request.session["lang"] = lang
+    db.commit()
+    flash(request, _("Language updated."), "success")
     return RedirectResponse(url="/account", status_code=302)

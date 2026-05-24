@@ -16,6 +16,7 @@ class Member(Base):
     is_removed = Column(Boolean, default=False, nullable=False)
     force_password_change = Column(Boolean, default=True, nullable=False)
     is_sentinel = Column(Boolean, default=False, nullable=False)
+    language = Column(String, default="en", nullable=False)
     joined_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     chore_states = relationship("ChoreState", back_populates="member", cascade="all, delete-orphan")
@@ -27,9 +28,11 @@ class Chore(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
+    name_vi = Column(String, nullable=True)
     icon = Column(String, default="🧹")
     limit_hours = Column(Integer, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
+    notes = Column(Text, nullable=True)
 
     chore_states = relationship("ChoreState", back_populates="chore", cascade="all, delete-orphan")
     chore_logs = relationship("ChoreLog", back_populates="chore")

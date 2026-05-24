@@ -8,6 +8,7 @@ from ..database import get_db
 from ..dependencies import require_admin, require_mutable_admin
 from ..models import Member, Chore, ChoreState
 from ..logic import apply_chore_log
+from ..i18n import _
 
 router = APIRouter(prefix="/admin")
 templates: Jinja2Templates = None
@@ -61,7 +62,7 @@ async def add_member(
 ):
     existing = db.query(Member).filter(Member.username == username).first()
     if existing:
-        flash(request, f"Username '{username}' is already taken.", "error")
+        flash(request, _("Username '%(username)s' is already taken.") % {"username": username}, "error")
         return RedirectResponse(url="/admin", status_code=302)
 
     from datetime import datetime
@@ -84,7 +85,7 @@ async def add_member(
         db.add(state)
 
     db.commit()
-    flash(request, f"Member '{display_name}' added.", "success")
+    flash(request, _("Member '%(name)s' added.") % {"name": display_name}, "success")
     return RedirectResponse(url="/admin", status_code=302)
 
 
@@ -97,15 +98,17 @@ async def toggle_member_active(
 ):
     member = db.get(Member, member_id)
     if not member or member.is_removed:
-        flash(request, "Member not found.", "error")
+        flash(request, _("Member not found."), "error")
         return RedirectResponse(url="/admin", status_code=302)
     if member.id == user.id:
-        flash(request, "You cannot deactivate yourself.", "error")
+        flash(request, _("You cannot deactivate yourself."), "error")
         return RedirectResponse(url="/admin", status_code=302)
     member.is_active = not member.is_active
     db.commit()
-    status = "activated" if member.is_active else "deactivated"
-    flash(request, f"'{member.display_name}' {status}.", "success")
+    if member.is_active:
+        flash(request, _("'%(name)s' activated.") % {"name": member.display_name}, "success")
+    else:
+        flash(request, _("'%(name)s' deactivated.") % {"name": member.display_name}, "success")
     return RedirectResponse(url="/admin", status_code=302)
 
 
@@ -119,16 +122,15 @@ async def reset_member_password(
 ):
     member = db.get(Member, member_id)
     if not member or member.is_removed:
-        flash(request, "Member not found.", "error")
+        flash(request, _("Member not found."), "error")
         return RedirectResponse(url="/admin", status_code=302)
     if len(new_password) < 6:
-        flash(request, "Password must be at least 6 characters.", "error")
+        flash(request, _("Password must be at least 6 characters."), "error")
         return RedirectResponse(url="/admin", status_code=302)
     member.password = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
     member.force_password_change = True
     db.commit()
-    flash(request, f"Password for '{member.display_name}' reset. They must change it on next login.",
-          "success")
+    flash(request, _("Password for '%(name)s' reset. They must change it on next login.") % {"name": member.display_name}, "success")
     return RedirectResponse(url="/admin", status_code=302)
 
 
@@ -141,15 +143,15 @@ async def remove_member(
 ):
     member = db.get(Member, member_id)
     if not member or member.is_removed:
-        flash(request, "Member not found.", "error")
+        flash(request, _("Member not found."), "error")
         return RedirectResponse(url="/admin", status_code=302)
     if member.id == user.id:
-        flash(request, "You cannot remove yourself.", "error")
+        flash(request, _("You cannot remove yourself."), "error")
         return RedirectResponse(url="/admin", status_code=302)
     member.is_removed = True
     member.is_active = False
     db.commit()
-    flash(request, f"'{member.display_name}' removed. Logs preserved.", "success")
+    flash(request, _("'%(name)s' removed. Logs preserved.") % {"name": member.display_name}, "success")
     return RedirectResponse(url="/admin", status_code=302)
 
 
@@ -159,12 +161,14 @@ async def remove_member(
 async def add_chore(
     request: Request,
     name: str = Form(...),
+    name_vi: str = Form(""),
     icon: str = Form("🧹"),
     limit_hours: int = Form(...),
+    notes: str = Form(""),
     user: Member = Depends(require_mutable_admin),
     db: Session = Depends(get_db),
 ):
-    chore = Chore(name=name, icon=icon or "🧹", limit_hours=limit_hours, is_active=True)
+    chore = Chore(name=name, name_vi=name_vi or None, icon=icon or "🧹", limit_hours=limit_hours, notes=notes or None, is_active=True)
     db.add(chore)
     db.flush()
 
@@ -176,7 +180,7 @@ async def add_chore(
         db.add(state)
 
     db.commit()
-    flash(request, f"Chore '{name}' added.", "success")
+    flash(request, _("Chore '%(name)s' added.") % {"name": name}, "success")
     return RedirectResponse(url="/admin", status_code=302)
 
 
@@ -185,20 +189,24 @@ async def edit_chore(
     request: Request,
     chore_id: int,
     name: str = Form(...),
+    name_vi: str = Form(""),
     icon: str = Form("🧹"),
     limit_hours: int = Form(...),
+    notes: str = Form(""),
     user: Member = Depends(require_mutable_admin),
     db: Session = Depends(get_db),
 ):
     chore = db.get(Chore, chore_id)
     if not chore:
-        flash(request, "Chore not found.", "error")
+        flash(request, _("Chore not found."), "error")
         return RedirectResponse(url="/admin", status_code=302)
     chore.name = name
+    chore.name_vi = name_vi or None
     chore.icon = icon or "🧹"
     chore.limit_hours = limit_hours
+    chore.notes = notes or None
     db.commit()
-    flash(request, f"Chore '{name}' updated.", "success")
+    flash(request, _("Chore '%(name)s' updated.") % {"name": name}, "success")
     return RedirectResponse(url="/admin", status_code=302)
 
 
@@ -211,12 +219,14 @@ async def toggle_chore(
 ):
     chore = db.get(Chore, chore_id)
     if not chore:
-        flash(request, "Chore not found.", "error")
+        flash(request, _("Chore not found."), "error")
         return RedirectResponse(url="/admin", status_code=302)
     chore.is_active = not chore.is_active
     db.commit()
-    status = "activated" if chore.is_active else "deactivated"
-    flash(request, f"Chore '{chore.name}' {status}.", "success")
+    if chore.is_active:
+        flash(request, _("Chore '%(name)s' activated.") % {"name": chore.name}, "success")
+    else:
+        flash(request, _("Chore '%(name)s' deactivated.") % {"name": chore.name}, "success")
     return RedirectResponse(url="/admin", status_code=302)
 
 
@@ -233,17 +243,17 @@ async def log_on_behalf(
     member = db.get(Member, member_id)
     chore = db.get(Chore, chore_id)
     if not member or member.is_removed:
-        flash(request, "Member not found.", "error")
+        flash(request, _("Member not found."), "error")
         return RedirectResponse(url="/admin", status_code=302)
     if not chore or not chore.is_active:
-        flash(request, "Chore not found.", "error")
+        flash(request, _("Chore not found."), "error")
         return RedirectResponse(url="/admin", status_code=302)
 
     apply_chore_log(db, member, chore)
     db.commit()
     flash(
         request,
-        f"Logged '{chore.name}' on behalf of {member.display_name}.",
+        _("Logged '%(chore)s' on behalf of %(member)s.") % {"chore": chore.name, "member": member.display_name},
         "success",
     )
     return RedirectResponse(url="/admin", status_code=302)
@@ -258,16 +268,18 @@ async def toggle_sentinel(
 ):
     member = db.get(Member, member_id)
     if not member or member.is_removed:
-        flash(request, "Member not found.", "error")
+        flash(request, _("Member not found."), "error")
         return RedirectResponse(url="/admin", status_code=302)
     if not member.is_admin:
-        flash(request, "Sentinel role requires admin access.", "error")
+        flash(request, _("Sentinel role requires admin access."), "error")
         return RedirectResponse(url="/admin", status_code=302)
     if member.id == user.id:
-        flash(request, "You cannot change your own sentinel status.", "error")
+        flash(request, _("You cannot change your own sentinel status."), "error")
         return RedirectResponse(url="/admin", status_code=302)
     member.is_sentinel = not member.is_sentinel
     db.commit()
-    status = "marked as sentinel" if member.is_sentinel else "no longer sentinel"
-    flash(request, f"'{member.display_name}' {status}.", "success")
+    if member.is_sentinel:
+        flash(request, _("'%(name)s' marked as sentinel.") % {"name": member.display_name}, "success")
+    else:
+        flash(request, _("'%(name)s' no longer sentinel.") % {"name": member.display_name}, "success")
     return RedirectResponse(url="/admin", status_code=302)

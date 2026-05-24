@@ -19,6 +19,8 @@ from .routers import auth as auth_router
 from .routers import chores as chores_router
 from .routers import admin as admin_router
 from .routers import account as account_router
+from . import i18n as i18n_module
+from .i18n import set_language, reset_language
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -36,6 +38,14 @@ def _migrate():
     with engine.begin() as conn:
         if "is_sentinel" not in cols:
             conn.execute(text("ALTER TABLE members ADD COLUMN is_sentinel BOOLEAN NOT NULL DEFAULT 0"))
+        if "language" not in cols:
+            conn.execute(text("ALTER TABLE members ADD COLUMN language VARCHAR NOT NULL DEFAULT 'en'"))
+    chore_cols = [c["name"] for c in sa_inspect(engine).get_columns("chores")]
+    with engine.begin() as conn:
+        if "name_vi" not in chore_cols:
+            conn.execute(text("ALTER TABLE chores ADD COLUMN name_vi VARCHAR"))
+        if "notes" not in chore_cols:
+            conn.execute(text("ALTER TABLE chores ADD COLUMN notes TEXT"))
 
 
 def init_db():
@@ -77,6 +87,18 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan, title="Dorm Chore Manager")
 
+
+@app.middleware("http")
+async def i18n_middleware(request: Request, call_next):
+    lang = request.session.get("lang", "en")
+    tokens = set_language(lang)
+    try:
+        response = await call_next(request)
+    finally:
+        reset_language(tokens)
+    return response
+
+
 SECRET_KEY = os.getenv("SECRET_KEY", "change-me-please-set-SECRET_KEY-env-var")
 app.add_middleware(
     SessionMiddleware,
@@ -92,17 +114,18 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 
 def _time_ago(dt: datetime) -> str:
+    _ = i18n_module._
     if dt is None:
-        return "never done"
+        return _("never done")
     diff = datetime.utcnow() - dt
     secs = diff.total_seconds()
     if secs < 60:
-        return "just now"
+        return _("just now")
     if secs < 3600:
-        return f"{int(secs/60)}m ago"
+        return _("%(n)sm ago") % {"n": int(secs / 60)}
     if secs < 86400:
-        return f"{int(secs/3600)}h ago"
-    return f"{int(secs/86400)}d ago"
+        return _("%(n)sh ago") % {"n": int(secs / 3600)}
+    return _("%(n)sd ago") % {"n": int(secs / 86400)}
 
 
 def _fmt_hours(hours: float) -> str:
@@ -115,8 +138,21 @@ def _fmt_hours(hours: float) -> str:
     return f"{hours/24:.0f}d"
 
 
+def _chore_name(chore) -> str:
+    if chore is None:
+        return ""
+    if i18n_module.get_lang() == "vi" and chore.name_vi:
+        return chore.name_vi
+    return chore.name
+
+
 templates.env.filters["time_ago"] = _time_ago
 templates.env.filters["fmt_hours"] = _fmt_hours
+templates.env.globals["_"] = i18n_module._
+templates.env.globals["ngettext"] = i18n_module.ngettext
+templates.env.globals["current_lang"] = i18n_module.get_lang
+templates.env.globals["SUPPORTED_LANGUAGES"] = i18n_module.SUPPORTED
+templates.env.globals["chore_name"] = _chore_name
 
 
 @app.exception_handler(AuthException)

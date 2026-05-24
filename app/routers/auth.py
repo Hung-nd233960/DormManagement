@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from ..dependencies import require_session_user
 from ..models import Member
+from ..i18n import _
 
 router = APIRouter()
 templates: Jinja2Templates = None  # set in main.py
@@ -46,10 +47,11 @@ async def do_login(
         db.query(Member).filter(Member.username == username, Member.is_removed == False).first()
     )
     if not member or not bcrypt.checkpw(password.encode(), member.password.encode()):
-        flash(request, "Invalid username or password.", "error")
+        flash(request, _("Invalid username or password."), "error")
         return RedirectResponse(url="/login", status_code=302)
 
     request.session["user_id"] = member.id
+    request.session["lang"] = member.language
     if member.force_password_change:
         return RedirectResponse(url="/change-password", status_code=302)
     return RedirectResponse(url="/today", status_code=302)
@@ -76,8 +78,10 @@ async def toggle_own_active(
 ):
     user.is_active = not user.is_active
     db.commit()
-    status = "active" if user.is_active else "inactive"
-    flash(request, f"You are now marked as {status}.", "info")
+    if user.is_active:
+        flash(request, _("You are now marked as active."), "info")
+    else:
+        flash(request, _("You are now marked as inactive."), "info")
     return RedirectResponse(url="/today", status_code=302)
 
 
@@ -91,17 +95,17 @@ async def do_change_password(
     db: Session = Depends(get_db),
 ):
     if not bcrypt.checkpw(current_password.encode(), user.password.encode()):
-        flash(request, "Current password is incorrect.", "error")
+        flash(request, _("Current password is incorrect."), "error")
         return RedirectResponse(url="/change-password", status_code=302)
     if new_password != confirm_password:
-        flash(request, "New passwords do not match.", "error")
+        flash(request, _("New passwords do not match."), "error")
         return RedirectResponse(url="/change-password", status_code=302)
     if len(new_password) < 6:
-        flash(request, "Password must be at least 6 characters.", "error")
+        flash(request, _("Password must be at least 6 characters."), "error")
         return RedirectResponse(url="/change-password", status_code=302)
 
     user.password = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
     user.force_password_change = False
     db.commit()
-    flash(request, "Password changed successfully.", "success")
+    flash(request, _("Password changed successfully."), "success")
     return RedirectResponse(url="/today", status_code=302)

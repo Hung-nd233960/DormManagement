@@ -7,6 +7,7 @@ from ..database import get_db
 from ..dependencies import require_user
 from ..models import Member, Chore, ChoreLog
 from ..logic import apply_chore_log, build_chore_card, get_recommendation, is_done_today
+from ..i18n import _, fmt_month_year
 
 router = APIRouter()
 templates: Jinja2Templates = None
@@ -81,12 +82,12 @@ async def log_chore(
 ):
     chore = db.get(Chore, chore_id)
     if not chore or not chore.is_active:
-        flash(request, "Chore not found.", "error")
+        flash(request, _("Chore not found."), "error")
         return RedirectResponse(url="/today", status_code=302)
 
     apply_chore_log(db, user, chore)
     db.commit()
-    flash(request, f"{chore.icon} {chore.name} logged!", "success")
+    flash(request, _("%(icon)s %(name)s logged!") % {"icon": chore.icon, "name": chore.name}, "success")
     return RedirectResponse(url="/today", status_code=302)
 
 
@@ -105,9 +106,9 @@ async def log_all_recommended(
             count += 1
     db.commit()
     if count:
-        flash(request, f"Logged {count} recommended chore(s)!", "success")
+        flash(request, _("Logged %(n)s recommended chore(s)!") % {"n": count}, "success")
     else:
-        flash(request, "No pending recommended chores.", "info")
+        flash(request, _("No pending recommended chores."), "info")
     return RedirectResponse(url="/today", status_code=302)
 
 
@@ -201,7 +202,7 @@ async def history_page(
                 "mode": "calendar",
                 "year": y,
                 "month": m,
-                "month_name": first_day.strftime("%B %Y"),
+                "month_name": fmt_month_year(y, m),
                 "calendar_weeks": calendar.monthcalendar(y, m),
                 "logs_by_day": logs_by_day,
                 "prev_year": prev_y,

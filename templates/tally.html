@@ -1,16 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Tally — DormChores{% endblock %}
+{% block title %}{{ _("Tally") }} — DormChores{% endblock %}
 
 {% block content %}
 <div class="page-header">
-  <h1>Tally</h1>
-  <p class="page-subtitle">Lifetime chore counts for all members</p>
+  <h1>{{ _("Tally") }}</h1>
+  <p class="page-subtitle">{{ _("Lifetime chore counts for all members") }}</p>
 </div>
 
 {% if not members or not chores %}
 <div class="empty-state">
   <div class="empty-icon">📊</div>
-  <p>No data yet. Start logging chores!</p>
+  <p>{{ _("No data yet. Start logging chores!") }}</p>
 </div>
 {% else %}
 
@@ -19,12 +19,12 @@
   <table class="tally-table">
     <thead>
       <tr>
-        <th class="tally-chore-col">Chore</th>
+        <th class="tally-chore-col">{{ _("Chore") }}</th>
         {% for member in members %}
         <th class="tally-member-col {% if not member.is_active %}muted{% endif %}">
           <img src="/avatar/{{ member.id }}" class="member-avatar" alt="{{ member.display_name }}">
           <div class="member-name">{{ member.display_name }}</div>
-          {% if not member.is_active %}<div class="badge badge-inactive">Inactive</div>{% endif %}
+          {% if not member.is_active %}<div class="badge badge-inactive">{{ _("Inactive") }}</div>{% endif %}
         </th>
         {% endfor %}
       </tr>
@@ -32,7 +32,7 @@
     <tbody>
       {% for chore in chores %}
       <tr>
-        <td class="tally-chore-name"><span>{{ chore.icon }}</span> {{ chore.name }}</td>
+        <td class="tally-chore-name"><span>{{ chore.icon }}</span> {{ chore_name(chore) }}</td>
         {% for member in members %}
         {% set count = matrix[member.id][chore.id] %}
         {% set chore_total = chore_totals[chore.id] %}
@@ -50,7 +50,7 @@
     </tbody>
     <tfoot>
       <tr class="tally-footer">
-        <td><strong>Total</strong></td>
+        <td><strong>{{ _("Total") }}</strong></td>
         {% for member in members %}
         <td class="tally-cell {% if not member.is_active %}muted{% endif %}">
           <strong>{{ totals[member.id] }}</strong>
@@ -66,16 +66,16 @@
   <table class="tally-table">
     <thead>
       <tr>
-        <th class="tally-mob-member-col">Member</th>
+        <th class="tally-mob-member-col">{{ _("Member") }}</th>
         {% for chore in chores %}
         <th class="tally-mob-chore-col">
           <div class="tally-mob-chore-header">
             <span class="tally-mob-chore-icon">{{ chore.icon }}</span>
-            <span class="tally-mob-chore-name">{{ chore.name }}</span>
+            <span class="tally-mob-chore-name">{{ chore_name(chore) }}</span>
           </div>
         </th>
         {% endfor %}
-        <th class="tally-mob-total-col">Total</th>
+        <th class="tally-mob-total-col">{{ _("Total") }}</th>
       </tr>
     </thead>
     <tbody>
@@ -87,7 +87,7 @@
             <span class="tally-mob-member-name">{{ member.display_name }}</span>
           </div>
           {% if not member.is_active %}
-          <div class="badge badge-inactive" style="margin-top:3px">Inactive</div>
+          <div class="badge badge-inactive" style="margin-top:3px">{{ _("Inactive") }}</div>
           {% endif %}
         </td>
         {% for chore in chores %}

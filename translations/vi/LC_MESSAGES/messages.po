@@ -1,0 +1,668 @@
+# Vietnamese translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-24 16:39+0700\n"
+"PO-Revision-Date: 2026-05-24 16:39+0700\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: vi\n"
+"Language-Team: vi <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app/dependencies.py:39
+msgid "Sentinel accounts are read-only."
+msgstr "Tài khoản sentinel chỉ được đọc."
+
+#: app/main.py:113 templates/today.html:49 templates/today.html:81
+#: templates/today.html:143
+msgid "never done"
+msgstr "chưa làm"
+
+#: app/main.py:117
+msgid "just now"
+msgstr "vừa xong"
+
+#: app/main.py:119
+#, python-format
+msgid "%(n)sm ago"
+msgstr "%(n)s phút trước"
+
+#: app/main.py:121
+#, python-format
+msgid "%(n)sh ago"
+msgstr "%(n)s giờ trước"
+
+#: app/main.py:122
+#, python-format
+msgid "%(n)sd ago"
+msgstr "%(n)s ngày trước"
+
+#: app/routers/account.py:99
+msgid "Username must be 1–50 lowercase letters, numbers, or underscores."
+msgstr "Tên đăng nhập phải có 1–50 ký tự gồm chữ thường, số hoặc dấu gạch dưới."
+
+#: app/routers/account.py:102
+msgid "That's already your username."
+msgstr "Đó đã là tên đăng nhập của bạn rồi."
+
+#: app/routers/account.py:105
+#, python-format
+msgid "'%(username)s' is already taken."
+msgstr "'%(username)s' đã được sử dụng."
+
+#: app/routers/account.py:109
+msgid "Username updated."
+msgstr "Đã cập nhật tên đăng nhập."
+
+#: app/routers/account.py:123
+msgid "Please upload an image file."
+msgstr "Vui lòng tải lên tệp hình ảnh."
+
+#: app/routers/account.py:134
+msgid "Image must be under 5 MB."
+msgstr "Hình ảnh phải nhỏ hơn 5 MB."
+
+#: app/routers/account.py:143
+msgid "Profile picture updated."
+msgstr "Đã cập nhật ảnh đại diện."
+
+#: app/routers/account.py:155
+msgid "Profile picture removed."
+msgstr "Đã xóa ảnh đại diện."
+
+#: app/routers/account.py:155
+msgid "No picture to remove."
+msgstr "Không có ảnh để xóa."
+
+#: app/routers/account.py:167
+msgid "Invalid language."
+msgstr "Ngôn ngữ không hợp lệ."
+
+#: app/routers/account.py:172
+msgid "Language updated."
+msgstr "Đã cập nhật ngôn ngữ."
+
+#: app/routers/admin.py:65
+#, python-format
+msgid "Username '%(username)s' is already taken."
+msgstr "Tên đăng nhập '%(username)s' đã được sử dụng."
+
+#: app/routers/admin.py:88
+#, python-format
+msgid "Member '%(name)s' added."
+msgstr "Đã thêm thành viên '%(name)s'."
+
+#: app/routers/admin.py:101 app/routers/admin.py:125 app/routers/admin.py:146
+#: app/routers/admin.py:240 app/routers/admin.py:265
+msgid "Member not found."
+msgstr "Không tìm thấy thành viên."
+
+#: app/routers/admin.py:104
+msgid "You cannot deactivate yourself."
+msgstr "Bạn không thể vô hiệu hóa chính mình."
+
+#: app/routers/admin.py:109
+#, python-format
+msgid "'%(name)s' activated."
+msgstr "Đã kích hoạt '%(name)s'."
+
+#: app/routers/admin.py:111
+#, python-format
+msgid "'%(name)s' deactivated."
+msgstr "Đã vô hiệu hóa '%(name)s'."
+
+#: app/routers/admin.py:128 app/routers/auth.py:104
+msgid "Password must be at least 6 characters."
+msgstr "Mật khẩu phải có ít nhất 6 ký tự."
+
+#: app/routers/admin.py:133
+#, python-format
+msgid "Password for '%(name)s' reset. They must change it on next login."
+msgstr "Đã đặt lại mật khẩu cho '%(name)s'. Họ phải đổi mật khẩu vào lần đăng nhập tiếp theo."
+
+#: app/routers/admin.py:149
+msgid "You cannot remove yourself."
+msgstr "Bạn không thể xóa chính mình."
+
+#: app/routers/admin.py:154
+#, python-format
+msgid "'%(name)s' removed. Logs preserved."
+msgstr "Đã xóa '%(name)s'. Lịch sử được giữ lại."
+
+#: app/routers/admin.py:181
+#, python-format
+msgid "Chore '%(name)s' added."
+msgstr "Đã thêm công việc '%(name)s'."
+
+#: app/routers/admin.py:197 app/routers/admin.py:216 app/routers/admin.py:243
+#: app/routers/chores.py:85
+msgid "Chore not found."
+msgstr "Không tìm thấy công việc."
+
+#: app/routers/admin.py:203
+#, python-format
+msgid "Chore '%(name)s' updated."
+msgstr "Đã cập nhật công việc '%(name)s'."
+
+#: app/routers/admin.py:221
+#, python-format
+msgid "Chore '%(name)s' activated."
+msgstr "Đã kích hoạt công việc '%(name)s'."
+
+#: app/routers/admin.py:223
+#, python-format
+msgid "Chore '%(name)s' deactivated."
+msgstr "Đã vô hiệu hóa công việc '%(name)s'."
+
+#: app/routers/admin.py:250
+#, python-format
+msgid "Logged '%(chore)s' on behalf of %(member)s."
+msgstr "Đã ghi nhận '%(chore)s' thay cho %(member)s."
+
+#: app/routers/admin.py:268
+msgid "Sentinel role requires admin access."
+msgstr "Vai trò sentinel yêu cầu quyền quản trị viên."
+
+#: app/routers/admin.py:271
+msgid "You cannot change your own sentinel status."
+msgstr "Bạn không thể thay đổi trạng thái sentinel của chính mình."
+
+#: app/routers/admin.py:276
+#, python-format
+msgid "'%(name)s' marked as sentinel."
+msgstr "Đã đánh dấu '%(name)s' là sentinel."
+
+#: app/routers/admin.py:278
+#, python-format
+msgid "'%(name)s' no longer sentinel."
+msgstr "'%(name)s' không còn là sentinel nữa."
+
+#: app/routers/auth.py:50
+msgid "Invalid username or password."
+msgstr "Tên đăng nhập hoặc mật khẩu không đúng."
+
+#: app/routers/auth.py:82
+msgid "You are now marked as active."
+msgstr "Bạn đã được đánh dấu là đang hoạt động."
+
+#: app/routers/auth.py:84
+msgid "You are now marked as inactive."
+msgstr "Bạn đã được đánh dấu là không hoạt động."
+
+#: app/routers/auth.py:98
+msgid "Current password is incorrect."
+msgstr "Mật khẩu hiện tại không đúng."
+
+#: app/routers/auth.py:101
+msgid "New passwords do not match."
+msgstr "Mật khẩu mới không khớp."
+
+#: app/routers/auth.py:110
+msgid "Password changed successfully."
+msgstr "Đã đổi mật khẩu thành công."
+
+#: app/routers/chores.py:90
+#, python-format
+msgid "%(icon)s %(name)s logged!"
+msgstr "%(icon)s %(name)s đã được ghi nhận!"
+
+#: app/routers/chores.py:109
+#, python-format
+msgid "Logged %(n)s recommended chore(s)!"
+msgstr "Đã ghi nhận %(n)s công việc được đề xuất!"
+
+#: app/routers/chores.py:111
+msgid "No pending recommended chores."
+msgstr "Không có công việc đề xuất nào đang chờ."
+
+#: templates/account.html:2 templates/account.html:6 templates/base.html:78
+msgid "Account"
+msgstr "Tài khoản"
+
+#: templates/account.html:15 templates/admin.html:2 templates/admin.html:49
+#: templates/base.html:28 templates/base.html:72
+msgid "Admin"
+msgstr "Quản trị"
+
+#: templates/account.html:22
+msgid "Profile Picture"
+msgstr "Ảnh đại diện"
+
+#: templates/account.html:25
+msgid "Upload image (JPG, PNG, WebP, GIF · max 5 MB)"
+msgstr "Tải lên hình ảnh (JPG, PNG, WebP, GIF · tối đa 5 MB)"
+
+#: templates/account.html:28
+msgid "Upload"
+msgstr "Tải lên"
+
+#: templates/account.html:32
+msgid "Remove picture"
+msgstr "Xóa ảnh"
+
+#: templates/account.html:39 templates/admin.html:26 templates/admin.html:98
+#: templates/login.html:24
+msgid "Username"
+msgstr "Tên đăng nhập"
+
+#: templates/account.html:42
+msgid "New username"
+msgstr "Tên đăng nhập mới"
+
+#: templates/account.html:46
+msgid "Lowercase letters, numbers, underscores only"
+msgstr "Chỉ dùng chữ thường, số và dấu gạch dưới"
+
+#: templates/account.html:48
+msgid "Save username"
+msgstr "Lưu tên đăng nhập"
+
+#: templates/account.html:54 templates/login.html:28
+msgid "Password"
+msgstr "Mật khẩu"
+
+#: templates/account.html:55
+msgid "Change password"
+msgstr "Đổi mật khẩu"
+
+#: templates/account.html:60
+msgid "Language"
+msgstr "Ngôn ngữ"
+
+#: templates/account.html:69
+msgid "Save"
+msgstr "Lưu"
+
+#: templates/account.html:76 templates/admin.html:27 templates/admin.html:129
+msgid "Status"
+msgstr "Trạng thái"
+
+#: templates/account.html:78
+msgid "You are currently"
+msgstr "Bạn hiện đang"
+
+#: templates/account.html:79
+msgid "active"
+msgstr "hoạt động"
+
+#: templates/account.html:79
+msgid "inactive"
+msgstr "không hoạt động"
+
+#: templates/account.html:80
+msgid "Inactive members are excluded from chore recommendations."
+msgstr "Thành viên không hoạt động sẽ không được đề xuất công việc."
+
+#: templates/account.html:84
+msgid "Mark me inactive"
+msgstr "Đánh dấu tôi là không hoạt động"
+
+#: templates/account.html:84
+msgid "Mark me active"
+msgstr "Đánh dấu tôi là đang hoạt động"
+
+#: templates/account.html:93
+msgid "Logout"
+msgstr "Đăng xuất"
+
+#: templates/admin.html:14
+msgid "Admin Panel"
+msgstr "Bảng quản trị"
+
+#: templates/admin.html:19
+msgid "Members"
+msgstr "Thành viên"
+
+#: templates/admin.html:25 templates/admin.html:127 templates/admin.html:173
+#: templates/admin.html:258
+msgid "Name"
+msgstr "Tên"
+
+#: templates/admin.html:28
+msgid "Role"
+msgstr "Vai trò"
+
+#: templates/admin.html:29 templates/admin.html:130
+msgid "Actions"
+msgstr "Thao tác"
+
+#: templates/admin.html:42 templates/admin.html:141
+msgid "Active"
+msgstr "Hoạt động"
+
+#: templates/admin.html:44 templates/admin.html:143 templates/tally.html:27
+#: templates/tally.html:90
+msgid "Inactive"
+msgstr "Không hoạt động"
+
+#: templates/admin.html:59 templates/admin.html:153
+msgid "Deactivate"
+msgstr "Vô hiệu hóa"
+
+#: templates/admin.html:59 templates/admin.html:153
+msgid "Activate"
+msgstr "Kích hoạt"
+
+#: templates/admin.html:66
+msgid "Reset PW"
+msgstr "Đặt lại MK"
+
+#: templates/admin.html:72
+msgid "Remove sentinel role"
+msgstr "Xóa vai trò sentinel"
+
+#: templates/admin.html:72
+msgid "Make sentinel (read-only admin)"
+msgstr "Đặt làm sentinel (quản trị chỉ đọc)"
+
+#: templates/admin.html:73
+msgid "Unsentinel"
+msgstr "Bỏ sentinel"
+
+#: templates/admin.html:80
+#, python-format
+msgid "Remove %(name)s? Their logs will be preserved."
+msgstr "Xóa %(name)s? Lịch sử của họ sẽ được giữ lại."
+
+#: templates/admin.html:82
+msgid "Remove"
+msgstr "Xóa"
+
+#: templates/admin.html:94 templates/admin.html:111
+msgid "Add Member"
+msgstr "Thêm thành viên"
+
+#: templates/admin.html:102
+msgid "Display Name"
+msgstr "Tên hiển thị"
+
+#: templates/admin.html:106
+msgid "Temp Password"
+msgstr "Mật khẩu tạm"
+
+#: templates/admin.html:120
+msgid "Chores"
+msgstr "Công việc"
+
+#: templates/admin.html:126 templates/admin.html:169 templates/admin.html:254
+msgid "Icon"
+msgstr "Biểu tượng"
+
+#: templates/admin.html:128
+msgid "Limit"
+msgstr "Giới hạn"
+
+#: templates/admin.html:149
+msgid "Edit"
+msgstr "Chỉnh sửa"
+
+#: templates/admin.html:165 templates/admin.html:182
+msgid "Add Chore"
+msgstr "Thêm công việc"
+
+#: templates/admin.html:177 templates/admin.html:262
+msgid "Limit (hours)"
+msgstr "Giới hạn (giờ)"
+
+#: templates/admin.html:191
+msgid "Log on Behalf"
+msgstr "Ghi nhận thay"
+
+#: templates/admin.html:195 templates/tally.html:69
+msgid "Member"
+msgstr "Thành viên"
+
+#: templates/admin.html:203 templates/tally.html:22
+msgid "Chore"
+msgstr "Công việc"
+
+#: templates/admin.html:212
+msgid "Log It"
+msgstr "Ghi nhận"
+
+#: templates/admin.html:222 templates/admin.html:235
+msgid "Reset Password"
+msgstr "Đặt lại mật khẩu"
+
+#: templates/admin.html:229
+msgid "New Temporary Password"
+msgstr "Mật khẩu tạm thời mới"
+
+#: templates/admin.html:232
+msgid "User will be required to change this on next login."
+msgstr "Người dùng sẽ phải đổi mật khẩu này vào lần đăng nhập tiếp theo."
+
+#: templates/admin.html:234 templates/admin.html:266
+#: templates/change_password.html:44
+msgid "Cancel"
+msgstr "Hủy"
+
+#: templates/admin.html:247
+msgid "Edit Chore"
+msgstr "Chỉnh sửa công việc"
+
+#: templates/admin.html:267
+msgid "Save Changes"
+msgstr "Lưu thay đổi"
+
+#: templates/base.html:24 templates/base.html:59 templates/today.html:2
+msgid "Today"
+msgstr "Hôm nay"
+
+#: templates/base.html:25 templates/base.html:63 templates/tally.html:2
+#: templates/tally.html:6
+msgid "Tally"
+msgstr "Thống kê"
+
+#: templates/base.html:26 templates/base.html:67 templates/history.html:2
+#: templates/history.html:8
+msgid "History"
+msgstr "Lịch sử"
+
+#: templates/base.html:32
+msgid "Toggle dark/light mode"
+msgstr "Chuyển chế độ tối/sáng"
+
+#: templates/change_password.html:6 templates/change_password.html:14
+#: templates/change_password.html:39
+msgid "Change Password"
+msgstr "Đổi mật khẩu"
+
+#: templates/change_password.html:16
+msgid "You must set a new password before continuing."
+msgstr "Bạn phải đặt mật khẩu mới trước khi tiếp tục."
+
+#: templates/change_password.html:18
+msgid "Choose a new secure password."
+msgstr "Hãy chọn một mật khẩu mới bảo mật."
+
+#: templates/change_password.html:28
+msgid "Current Password"
+msgstr "Mật khẩu hiện tại"
+
+#: templates/change_password.html:32
+msgid "New Password"
+msgstr "Mật khẩu mới"
+
+#: templates/change_password.html:36
+msgid "Confirm New Password"
+msgstr "Xác nhận mật khẩu mới"
+
+#: templates/change_password.html:49
+msgid "Logout instead"
+msgstr "Đăng xuất thay vào đó"
+
+#: templates/history.html:10
+#, python-format
+msgid "%(total)d total logs — page %(page)d of %(total_pages)d"
+msgstr "%(total)d lượt ghi nhận — trang %(page)d / %(total_pages)d"
+
+#: templates/history.html:18
+msgid "List"
+msgstr "Danh sách"
+
+#: templates/history.html:22
+msgid "Calendar"
+msgstr "Lịch"
+
+#: templates/history.html:33
+msgid "No chores logged yet. Get to work!"
+msgstr "Chưa có công việc nào được ghi nhận. Bắt đầu thôi!"
+
+#: templates/history.html:66
+msgid "Newer"
+msgstr "Mới hơn"
+
+#: templates/history.html:68
+#, python-format
+msgid "Page %(page)d / %(total_pages)d"
+msgstr "Trang %(page)d / %(total_pages)d"
+
+#: templates/history.html:70
+msgid "Older"
+msgstr "Cũ hơn"
+
+#: templates/history.html:80
+msgid "Prev"
+msgstr "Trước"
+
+#: templates/history.html:82
+msgid "Next"
+msgstr "Sau"
+
+#: templates/history.html:87
+msgid "Mon"
+msgstr "T2"
+
+#: templates/history.html:87
+msgid "Tue"
+msgstr "T3"
+
+#: templates/history.html:87
+msgid "Wed"
+msgstr "T4"
+
+#: templates/history.html:87
+msgid "Thu"
+msgstr "T5"
+
+#: templates/history.html:87
+msgid "Fri"
+msgstr "T6"
+
+#: templates/history.html:87
+msgid "Sat"
+msgstr "T7"
+
+#: templates/history.html:87
+msgid "Sun"
+msgstr "CN"
+
+#: templates/login.html:6
+msgid "Login"
+msgstr "Đăng nhập"
+
+#: templates/login.html:15
+msgid "Sign in to your account"
+msgstr "Đăng nhập vào tài khoản của bạn"
+
+#: templates/login.html:31
+msgid "Sign in"
+msgstr "Đăng nhập"
+
+#: templates/tally.html:7
+msgid "Lifetime chore counts for all members"
+msgstr "Tổng số lần làm việc của tất cả thành viên"
+
+#: templates/tally.html:13
+msgid "No data yet. Start logging chores!"
+msgstr "Chưa có dữ liệu. Hãy bắt đầu ghi nhận công việc!"
+
+#: templates/tally.html:53 templates/tally.html:78
+msgid "Total"
+msgstr "Tổng"
+
+#: templates/today.html:11
+msgid "Admin view — log chores via the Admin panel."
+msgstr "Chế độ quản trị — ghi nhận công việc qua bảng quản trị."
+
+#: templates/today.html:19
+msgid "chore recommended for you"
+msgid_plural "chores recommended for you"
+msgstr[0] "công việc được đề xuất cho bạn"
+
+#: templates/today.html:21
+msgid "All your recommended chores are done!"
+msgstr "Tất cả công việc được đề xuất của bạn đã hoàn thành!"
+
+#: templates/today.html:28
+msgid "I did it!"
+msgstr "Tôi đã làm xong!"
+
+#: templates/today.html:38
+msgid "Urgent"
+msgstr "Khẩn cấp"
+
+#: templates/today.html:45 templates/today.html:77
+msgid "Done today"
+msgstr "Đã làm hôm nay"
+
+#: templates/today.html:52 templates/today.html:125
+msgid "overdue"
+msgstr "quá hạn"
+
+#: templates/today.html:58 templates/today.html:88
+msgid "Your turn"
+msgstr "Đến lượt bạn"
+
+#: templates/today.html:58 templates/today.html:88 templates/today.html:177
+#, python-format
+msgid "%(name)s's turn"
+msgstr "Đến lượt %(name)s"
+
+#: templates/today.html:70
+msgid "Routine"
+msgstr "Thường lệ"
+
+#: templates/today.html:83
+msgid "limit"
+msgstr "giới hạn"
+
+#: templates/today.html:101
+msgid "No chores configured yet. Ask your admin to add some!"
+msgstr "Chưa có công việc nào được cấu hình. Hãy nhờ quản trị viên thêm vào!"
+
+#: templates/today.html:111
+msgid "What did you do?"
+msgstr "Bạn đã làm gì?"
+
+#: templates/today.html:117
+msgid "Recommended — Urgent"
+msgstr "Đề xuất — Khẩn cấp"
+
+#: templates/today.html:134
+msgid "Recommended — Routine"
+msgstr "Đề xuất — Thường lệ"
+
+#: templates/today.html:159
+msgid "I've done all my recommended tasks"
+msgstr "Tôi đã hoàn thành tất cả công việc được đề xuất"
+
+#: templates/today.html:160
+#, python-format
+msgid "Log all %(n)s at once"
+msgstr "Ghi nhận tất cả %(n)s cùng lúc"
+
+#: templates/today.html:168
+msgid "Other chores (went above &amp; beyond)"
+msgstr "Công việc khác (làm thêm ngoài yêu cầu)"
+

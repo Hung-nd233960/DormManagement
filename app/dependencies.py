@@ -2,6 +2,7 @@ from fastapi import Depends, Request
 from sqlalchemy.orm import Session
 from .database import get_db
 from .models import Member
+from .i18n import _
 
 
 class AuthException(Exception):
@@ -35,7 +36,7 @@ def require_admin(user: Member = Depends(require_user)) -> Member:
 def require_mutable_admin(request: Request, user: Member = Depends(require_admin)) -> Member:
     if user.is_sentinel:
         request.session.setdefault("_flashes", []).append(
-            {"message": "Sentinel accounts are read-only.", "category": "error"}
+            {"message": _("Sentinel accounts are read-only."), "category": "error"}
         )
         raise AuthException("/admin")
     return user

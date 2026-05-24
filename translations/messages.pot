@@ -1,0 +1,668 @@
+# Translations template for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-05-24 16:39+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app/dependencies.py:39
+msgid "Sentinel accounts are read-only."
+msgstr ""
+
+#: app/main.py:113 templates/today.html:49 templates/today.html:81
+#: templates/today.html:143
+msgid "never done"
+msgstr ""
+
+#: app/main.py:117
+msgid "just now"
+msgstr ""
+
+#: app/main.py:119
+#, python-format
+msgid "%(n)sm ago"
+msgstr ""
+
+#: app/main.py:121
+#, python-format
+msgid "%(n)sh ago"
+msgstr ""
+
+#: app/main.py:122
+#, python-format
+msgid "%(n)sd ago"
+msgstr ""
+
+#: app/routers/account.py:99
+msgid "Username must be 1–50 lowercase letters, numbers, or underscores."
+msgstr ""
+
+#: app/routers/account.py:102
+msgid "That's already your username."
+msgstr ""
+
+#: app/routers/account.py:105
+#, python-format
+msgid "'%(username)s' is already taken."
+msgstr ""
+
+#: app/routers/account.py:109
+msgid "Username updated."
+msgstr ""
+
+#: app/routers/account.py:123
+msgid "Please upload an image file."
+msgstr ""
+
+#: app/routers/account.py:134
+msgid "Image must be under 5 MB."
+msgstr ""
+
+#: app/routers/account.py:143
+msgid "Profile picture updated."
+msgstr ""
+
+#: app/routers/account.py:155
+msgid "Profile picture removed."
+msgstr ""
+
+#: app/routers/account.py:155
+msgid "No picture to remove."
+msgstr ""
+
+#: app/routers/account.py:167
+msgid "Invalid language."
+msgstr ""
+
+#: app/routers/account.py:172
+msgid "Language updated."
+msgstr ""
+
+#: app/routers/admin.py:65
+#, python-format
+msgid "Username '%(username)s' is already taken."
+msgstr ""
+
+#: app/routers/admin.py:88
+#, python-format
+msgid "Member '%(name)s' added."
+msgstr ""
+
+#: app/routers/admin.py:101 app/routers/admin.py:125 app/routers/admin.py:146
+#: app/routers/admin.py:240 app/routers/admin.py:265
+msgid "Member not found."
+msgstr ""
+
+#: app/routers/admin.py:104
+msgid "You cannot deactivate yourself."
+msgstr ""
+
+#: app/routers/admin.py:109
+#, python-format
+msgid "'%(name)s' activated."
+msgstr ""
+
+#: app/routers/admin.py:111
+#, python-format
+msgid "'%(name)s' deactivated."
+msgstr ""
+
+#: app/routers/admin.py:128 app/routers/auth.py:104
+msgid "Password must be at least 6 characters."
+msgstr ""
+
+#: app/routers/admin.py:133
+#, python-format
+msgid "Password for '%(name)s' reset. They must change it on next login."
+msgstr ""
+
+#: app/routers/admin.py:149
+msgid "You cannot remove yourself."
+msgstr ""
+
+#: app/routers/admin.py:154
+#, python-format
+msgid "'%(name)s' removed. Logs preserved."
+msgstr ""
+
+#: app/routers/admin.py:181
+#, python-format
+msgid "Chore '%(name)s' added."
+msgstr ""
+
+#: app/routers/admin.py:197 app/routers/admin.py:216 app/routers/admin.py:243
+#: app/routers/chores.py:85
+msgid "Chore not found."
+msgstr ""
+
+#: app/routers/admin.py:203
+#, python-format
+msgid "Chore '%(name)s' updated."
+msgstr ""
+
+#: app/routers/admin.py:221
+#, python-format
+msgid "Chore '%(name)s' activated."
+msgstr ""
+
+#: app/routers/admin.py:223
+#, python-format
+msgid "Chore '%(name)s' deactivated."
+msgstr ""
+
+#: app/routers/admin.py:250
+#, python-format
+msgid "Logged '%(chore)s' on behalf of %(member)s."
+msgstr ""
+
+#: app/routers/admin.py:268
+msgid "Sentinel role requires admin access."
+msgstr ""
+
+#: app/routers/admin.py:271
+msgid "You cannot change your own sentinel status."
+msgstr ""
+
+#: app/routers/admin.py:276
+#, python-format
+msgid "'%(name)s' marked as sentinel."
+msgstr ""
+
+#: app/routers/admin.py:278
+#, python-format
+msgid "'%(name)s' no longer sentinel."
+msgstr ""
+
+#: app/routers/auth.py:50
+msgid "Invalid username or password."
+msgstr ""
+
+#: app/routers/auth.py:82
+msgid "You are now marked as active."
+msgstr ""
+
+#: app/routers/auth.py:84
+msgid "You are now marked as inactive."
+msgstr ""
+
+#: app/routers/auth.py:98
+msgid "Current password is incorrect."
+msgstr ""
+
+#: app/routers/auth.py:101
+msgid "New passwords do not match."
+msgstr ""
+
+#: app/routers/auth.py:110
+msgid "Password changed successfully."
+msgstr ""
+
+#: app/routers/chores.py:90
+#, python-format
+msgid "%(icon)s %(name)s logged!"
+msgstr ""
+
+#: app/routers/chores.py:109
+#, python-format
+msgid "Logged %(n)s recommended chore(s)!"
+msgstr ""
+
+#: app/routers/chores.py:111
+msgid "No pending recommended chores."
+msgstr ""
+
+#: templates/account.html:2 templates/account.html:6 templates/base.html:78
+msgid "Account"
+msgstr ""
+
+#: templates/account.html:15 templates/admin.html:2 templates/admin.html:49
+#: templates/base.html:28 templates/base.html:72
+msgid "Admin"
+msgstr ""
+
+#: templates/account.html:22
+msgid "Profile Picture"
+msgstr ""
+
+#: templates/account.html:25
+msgid "Upload image (JPG, PNG, WebP, GIF · max 5 MB)"
+msgstr ""
+
+#: templates/account.html:28
+msgid "Upload"
+msgstr ""
+
+#: templates/account.html:32
+msgid "Remove picture"
+msgstr ""
+
+#: templates/account.html:39 templates/admin.html:26 templates/admin.html:98
+#: templates/login.html:24
+msgid "Username"
+msgstr ""
+
+#: templates/account.html:42
+msgid "New username"
+msgstr ""
+
+#: templates/account.html:46
+msgid "Lowercase letters, numbers, underscores only"
+msgstr ""
+
+#: templates/account.html:48
+msgid "Save username"
+msgstr ""
+
+#: templates/account.html:54 templates/login.html:28
+msgid "Password"
+msgstr ""
+
+#: templates/account.html:55
+msgid "Change password"
+msgstr ""
+
+#: templates/account.html:60
+msgid "Language"
+msgstr ""
+
+#: templates/account.html:69
+msgid "Save"
+msgstr ""
+
+#: templates/account.html:76 templates/admin.html:27 templates/admin.html:129
+msgid "Status"
+msgstr ""
+
+#: templates/account.html:78
+msgid "You are currently"
+msgstr ""
+
+#: templates/account.html:79
+msgid "active"
+msgstr ""
+
+#: templates/account.html:79
+msgid "inactive"
+msgstr ""
+
+#: templates/account.html:80
+msgid "Inactive members are excluded from chore recommendations."
+msgstr ""
+
+#: templates/account.html:84
+msgid "Mark me inactive"
+msgstr ""
+
+#: templates/account.html:84
+msgid "Mark me active"
+msgstr ""
+
+#: templates/account.html:93
+msgid "Logout"
+msgstr ""
+
+#: templates/admin.html:14
+msgid "Admin Panel"
+msgstr ""
+
+#: templates/admin.html:19
+msgid "Members"
+msgstr ""
+
+#: templates/admin.html:25 templates/admin.html:127 templates/admin.html:173
+#: templates/admin.html:258
+msgid "Name"
+msgstr ""
+
+#: templates/admin.html:28
+msgid "Role"
+msgstr ""
+
+#: templates/admin.html:29 templates/admin.html:130
+msgid "Actions"
+msgstr ""
+
+#: templates/admin.html:42 templates/admin.html:141
+msgid "Active"
+msgstr ""
+
+#: templates/admin.html:44 templates/admin.html:143 templates/tally.html:27
+#: templates/tally.html:90
+msgid "Inactive"
+msgstr ""
+
+#: templates/admin.html:59 templates/admin.html:153
+msgid "Deactivate"
+msgstr ""
+
+#: templates/admin.html:59 templates/admin.html:153
+msgid "Activate"
+msgstr ""
+
+#: templates/admin.html:66
+msgid "Reset PW"
+msgstr ""
+
+#: templates/admin.html:72
+msgid "Remove sentinel role"
+msgstr ""
+
+#: templates/admin.html:72
+msgid "Make sentinel (read-only admin)"
+msgstr ""
+
+#: templates/admin.html:73
+msgid "Unsentinel"
+msgstr ""
+
+#: templates/admin.html:80
+#, python-format
+msgid "Remove %(name)s? Their logs will be preserved."
+msgstr ""
+
+#: templates/admin.html:82
+msgid "Remove"
+msgstr ""
+
+#: templates/admin.html:94 templates/admin.html:111
+msgid "Add Member"
+msgstr ""
+
+#: templates/admin.html:102
+msgid "Display Name"
+msgstr ""
+
+#: templates/admin.html:106
+msgid "Temp Password"
+msgstr ""
+
+#: templates/admin.html:120
+msgid "Chores"
+msgstr ""
+
+#: templates/admin.html:126 templates/admin.html:169 templates/admin.html:254
+msgid "Icon"
+msgstr ""
+
+#: templates/admin.html:128
+msgid "Limit"
+msgstr ""
+
+#: templates/admin.html:149
+msgid "Edit"
+msgstr ""
+
+#: templates/admin.html:165 templates/admin.html:182
+msgid "Add Chore"
+msgstr ""
+
+#: templates/admin.html:177 templates/admin.html:262
+msgid "Limit (hours)"
+msgstr ""
+
+#: templates/admin.html:191
+msgid "Log on Behalf"
+msgstr ""
+
+#: templates/admin.html:195 templates/tally.html:69
+msgid "Member"
+msgstr ""
+
+#: templates/admin.html:203 templates/tally.html:22
+msgid "Chore"
+msgstr ""
+
+#: templates/admin.html:212
+msgid "Log It"
+msgstr ""
+
+#: templates/admin.html:222 templates/admin.html:235
+msgid "Reset Password"
+msgstr ""
+
+#: templates/admin.html:229
+msgid "New Temporary Password"
+msgstr ""
+
+#: templates/admin.html:232
+msgid "User will be required to change this on next login."
+msgstr ""
+
+#: templates/admin.html:234 templates/admin.html:266
+#: templates/change_password.html:44
+msgid "Cancel"
+msgstr ""
+
+#: templates/admin.html:247
+msgid "Edit Chore"
+msgstr ""
+
+#: templates/admin.html:267
+msgid "Save Changes"
+msgstr ""
+
+#: templates/base.html:24 templates/base.html:59 templates/today.html:2
+msgid "Today"
+msgstr ""
+
+#: templates/base.html:25 templates/base.html:63 templates/tally.html:2
+#: templates/tally.html:6
+msgid "Tally"
+msgstr ""
+
+#: templates/base.html:26 templates/base.html:67 templates/history.html:2
+#: templates/history.html:8
+msgid "History"
+msgstr ""
+
+#: templates/base.html:32
+msgid "Toggle dark/light mode"
+msgstr ""
+
+#: templates/change_password.html:6 templates/change_password.html:14
+#: templates/change_password.html:39
+msgid "Change Password"
+msgstr ""
+
+#: templates/change_password.html:16
+msgid "You must set a new password before continuing."
+msgstr ""
+
+#: templates/change_password.html:18
+msgid "Choose a new secure password."
+msgstr ""
+
+#: templates/change_password.html:28
+msgid "Current Password"
+msgstr ""
+
+#: templates/change_password.html:32
+msgid "New Password"
+msgstr ""
+
+#: templates/change_password.html:36
+msgid "Confirm New Password"
+msgstr ""
+
+#: templates/change_password.html:49
+msgid "Logout instead"
+msgstr ""
+
+#: templates/history.html:10
+#, python-format
+msgid "%(total)d total logs — page %(page)d of %(total_pages)d"
+msgstr ""
+
+#: templates/history.html:18
+msgid "List"
+msgstr ""
+
+#: templates/history.html:22
+msgid "Calendar"
+msgstr ""
+
+#: templates/history.html:33
+msgid "No chores logged yet. Get to work!"
+msgstr ""
+
+#: templates/history.html:66
+msgid "Newer"
+msgstr ""
+
+#: templates/history.html:68
+#, python-format
+msgid "Page %(page)d / %(total_pages)d"
+msgstr ""
+
+#: templates/history.html:70
+msgid "Older"
+msgstr ""
+
+#: templates/history.html:80
+msgid "Prev"
+msgstr ""
+
+#: templates/history.html:82
+msgid "Next"
+msgstr ""
+
+#: templates/history.html:87
+msgid "Mon"
+msgstr ""
+
+#: templates/history.html:87
+msgid "Tue"
+msgstr ""
+
+#: templates/history.html:87
+msgid "Wed"
+msgstr ""
+
+#: templates/history.html:87
+msgid "Thu"
+msgstr ""
+
+#: templates/history.html:87
+msgid "Fri"
+msgstr ""
+
+#: templates/history.html:87
+msgid "Sat"
+msgstr ""
+
+#: templates/history.html:87
+msgid "Sun"
+msgstr ""
+
+#: templates/login.html:6
+msgid "Login"
+msgstr ""
+
+#: templates/login.html:15
+msgid "Sign in to your account"
+msgstr ""
+
+#: templates/login.html:31
+msgid "Sign in"
+msgstr ""
+
+#: templates/tally.html:7
+msgid "Lifetime chore counts for all members"
+msgstr ""
+
+#: templates/tally.html:13
+msgid "No data yet. Start logging chores!"
+msgstr ""
+
+#: templates/tally.html:53 templates/tally.html:78
+msgid "Total"
+msgstr ""
+
+#: templates/today.html:11
+msgid "Admin view — log chores via the Admin panel."
+msgstr ""
+
+#: templates/today.html:19
+msgid "chore recommended for you"
+msgid_plural "chores recommended for you"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/today.html:21
+msgid "All your recommended chores are done!"
+msgstr ""
+
+#: templates/today.html:28
+msgid "I did it!"
+msgstr ""
+
+#: templates/today.html:38
+msgid "Urgent"
+msgstr ""
+
+#: templates/today.html:45 templates/today.html:77
+msgid "Done today"
+msgstr ""
+
+#: templates/today.html:52 templates/today.html:125
+msgid "overdue"
+msgstr ""
+
+#: templates/today.html:58 templates/today.html:88
+msgid "Your turn"
+msgstr ""
+
+#: templates/today.html:58 templates/today.html:88 templates/today.html:177
+#, python-format
+msgid "%(name)s's turn"
+msgstr ""
+
+#: templates/today.html:70
+msgid "Routine"
+msgstr ""
+
+#: templates/today.html:83
+msgid "limit"
+msgstr ""
+
+#: templates/today.html:101
+msgid "No chores configured yet. Ask your admin to add some!"
+msgstr ""
+
+#: templates/today.html:111
+msgid "What did you do?"
+msgstr ""
+
+#: templates/today.html:117
+msgid "Recommended — Urgent"
+msgstr ""
+
+#: templates/today.html:134
+msgid "Recommended — Routine"
+msgstr ""
+
+#: templates/today.html:159
+msgid "I've done all my recommended tasks"
+msgstr ""
+
+#: templates/today.html:160
+#, python-format
+msgid "Log all %(n)s at once"
+msgstr ""
+
+#: templates/today.html:168
+msgid "Other chores (went above &amp; beyond)"
+msgstr ""
+

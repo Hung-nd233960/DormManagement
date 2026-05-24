@@ -1,32 +1,34 @@
 {% extends "base.html" %}
-{% block title %}Admin — DormChores{% endblock %}
+{% block title %}{{ _("Admin") }} — DormChores{% endblock %}
 
 {% block content %}
 <div x-data="{
   resetMemberId: null,
   editChoreId: null,
   editChoreName: '',
+  editChoreNameVi: '',
   editChoreIcon: '',
-  editChoreHours: 0
+  editChoreHours: 0,
+  editChoreNotes: ''
 }">
 
 <div class="page-header">
-  <h1>Admin Panel</h1>
+  <h1>{{ _("Admin Panel") }}</h1>
 </div>
 
 <!-- ===== MEMBERS ===== -->
 <div class="admin-section">
-  <h2>Members</h2>
+  <h2>{{ _("Members") }}</h2>
 
   <div class="admin-table-wrap">
     <table class="admin-table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Username</th>
-          <th>Status</th>
-          <th>Role</th>
-          <th>Actions</th>
+          <th>{{ _("Name") }}</th>
+          <th>{{ _("Username") }}</th>
+          <th>{{ _("Status") }}</th>
+          <th>{{ _("Role") }}</th>
+          <th>{{ _("Actions") }}</th>
         </tr>
       </thead>
       <tbody>
@@ -39,14 +41,14 @@
           <td><code>{{ member.username }}</code></td>
           <td>
             {% if member.is_active %}
-            <span class="badge badge-active">Active</span>
+            <span class="badge badge-active">{{ _("Active") }}</span>
             {% else %}
-            <span class="badge badge-inactive">Inactive</span>
+            <span class="badge badge-inactive">{{ _("Inactive") }}</span>
             {% endif %}
           </td>
           <td>
             {% if member.is_admin %}
-            <span class="badge badge-admin">Admin</span>
+            <span class="badge badge-admin">{{ _("Admin") }}</span>
             {% endif %}
             {% if member.is_sentinel %}
             <span class="badge badge-sentinel">Sentinel</span>
@@ -56,29 +58,30 @@
             {% if member.id != user.id %}
             <form method="POST" action="/admin/members/{{ member.id }}/toggle-active" style="display:inline">
               <button type="submit" class="btn btn-secondary btn-xs">
-                {{ 'Deactivate' if member.is_active else 'Activate' }}
+                {{ _("Deactivate") if member.is_active else _("Activate") }}
               </button>
             </form>
             {% endif %}
 
             <button class="btn btn-secondary btn-xs"
               @click="resetMemberId = {{ member.id }}">
-              Reset PW
+              {{ _("Reset PW") }}
             </button>
 
             {% if member.is_admin and member.id != user.id %}
             <form method="POST" action="/admin/members/{{ member.id }}/toggle-sentinel" style="display:inline">
               <button type="submit" class="btn btn-secondary btn-xs"
-                title="{{ 'Remove sentinel role' if member.is_sentinel else 'Make sentinel (read-only admin)' }}">
-                {{ '🔒 Unsentinel' if member.is_sentinel else '🔒 Sentinel' }}
+                title="{{ _('Remove sentinel role') if member.is_sentinel else _('Make sentinel (read-only admin)') }}">
+                {{ '🔒 ' + _('Unsentinel') if member.is_sentinel else '🔒 Sentinel' }}
               </button>
             </form>
             {% endif %}
 
             {% if member.id != user.id %}
             <form method="POST" action="/admin/members/{{ member.id }}/remove" style="display:inline"
-              onsubmit="return confirm('Remove {{ member.display_name }}? Their logs will be preserved.')">
-              <button type="submit" class="btn btn-danger btn-xs">Remove</button>
+              data-confirm="{{ _('Remove %(name)s? Their logs will be preserved.') % {'name': member.display_name} }}"
+              onsubmit="return confirm(this.dataset.confirm)">
+              <button type="submit" class="btn btn-danger btn-xs">{{ _("Remove") }}</button>
             </form>
             {% endif %}
           </td>
@@ -90,24 +93,24 @@
 
   <!-- Add member form -->
   <details class="expandable">
-    <summary class="expandable-trigger">+ Add Member</summary>
+    <summary class="expandable-trigger">+ {{ _("Add Member") }}</summary>
     <form method="POST" action="/admin/members" class="inline-form">
       <div class="form-row">
         <div class="form-group">
-          <label>Username</label>
+          <label>{{ _("Username") }}</label>
           <input name="username" required placeholder="e.g. alice">
         </div>
         <div class="form-group">
-          <label>Display Name</label>
+          <label>{{ _("Display Name") }}</label>
           <input name="display_name" required placeholder="e.g. Alice">
         </div>
         <div class="form-group">
-          <label>Temp Password</label>
+          <label>{{ _("Temp Password") }}</label>
           <input name="password" type="password" required minlength="6">
         </div>
         <div class="form-group form-group-action">
           <label>&nbsp;</label>
-          <button type="submit" class="btn btn-primary">Add Member</button>
+          <button type="submit" class="btn btn-primary">{{ _("Add Member") }}</button>
         </div>
       </div>
     </form>
@@ -116,40 +119,40 @@
 
 <!-- ===== CHORES ===== -->
 <div class="admin-section">
-  <h2>Chores</h2>
+  <h2>{{ _("Chores") }}</h2>
 
   <div class="admin-table-wrap">
     <table class="admin-table">
       <thead>
         <tr>
-          <th>Icon</th>
-          <th>Name</th>
-          <th>Limit</th>
-          <th>Status</th>
-          <th>Actions</th>
+          <th>{{ _("Icon") }}</th>
+          <th>{{ _("Name") }}</th>
+          <th>{{ _("Limit") }}</th>
+          <th>{{ _("Status") }}</th>
+          <th>{{ _("Actions") }}</th>
         </tr>
       </thead>
       <tbody>
         {% for chore in chores %}
         <tr class="{% if not chore.is_active %}row-inactive{% endif %}">
           <td class="chore-icon-cell">{{ chore.icon }}</td>
-          <td>{{ chore.name }}</td>
+          <td>{{ chore_name(chore) }}</td>
           <td>{{ chore.limit_hours }}h</td>
           <td>
             {% if chore.is_active %}
-            <span class="badge badge-active">Active</span>
+            <span class="badge badge-active">{{ _("Active") }}</span>
             {% else %}
-            <span class="badge badge-inactive">Inactive</span>
+            <span class="badge badge-inactive">{{ _("Inactive") }}</span>
             {% endif %}
           </td>
           <td class="action-cell">
             <button class="btn btn-secondary btn-xs"
-              @click="editChoreId = {{ chore.id }}; editChoreName = '{{ chore.name | replace("'", "\\'") }}'; editChoreIcon = '{{ chore.icon }}'; editChoreHours = {{ chore.limit_hours }}">
-              Edit
+              @click="editChoreId = {{ chore.id }}; editChoreName = '{{ chore.name | replace("'", "\\'") }}'; editChoreNameVi = '{{ (chore.name_vi or '') | replace("'", "\\'") }}'; editChoreIcon = '{{ chore.icon }}'; editChoreHours = {{ chore.limit_hours }}; editChoreNotes = '{{ (chore.notes or '') | replace("'", "\\'") | replace('\n', '\\n') }}'">
+              {{ _("Edit") }}
             </button>
             <form method="POST" action="/admin/chores/{{ chore.id }}/toggle" style="display:inline">
               <button type="submit" class="btn btn-secondary btn-xs">
-                {{ 'Deactivate' if chore.is_active else 'Activate' }}
+                {{ _("Deactivate") if chore.is_active else _("Activate") }}
               </button>
             </form>
           </td>
@@ -161,24 +164,32 @@
 
   <!-- Add chore -->
   <details class="expandable">
-    <summary class="expandable-trigger">+ Add Chore</summary>
+    <summary class="expandable-trigger">+ {{ _("Add Chore") }}</summary>
     <form method="POST" action="/admin/chores" class="inline-form">
       <div class="form-row">
         <div class="form-group form-group-icon">
-          <label>Icon</label>
+          <label>{{ _("Icon") }}</label>
           <input name="icon" placeholder="🧹" maxlength="4" value="🧹">
         </div>
         <div class="form-group">
-          <label>Name</label>
+          <label>{{ _("Name") }}</label>
           <input name="name" required placeholder="e.g. Vacuum floors">
         </div>
+        <div class="form-group">
+          <label>Tên (Tiếng Việt)</label>
+          <input name="name_vi" placeholder="vd. Hút bụi sàn">
+        </div>
         <div class="form-group form-group-hours">
-          <label>Limit (hours)</label>
+          <label>{{ _("Limit (hours)") }}</label>
           <input name="limit_hours" type="number" required min="1" placeholder="48">
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea name="notes" rows="2" placeholder="Internal notes (optional)"></textarea>
         </div>
         <div class="form-group form-group-action">
           <label>&nbsp;</label>
-          <button type="submit" class="btn btn-primary">Add Chore</button>
+          <button type="submit" class="btn btn-primary">{{ _("Add Chore") }}</button>
         </div>
       </div>
     </form>
@@ -187,11 +198,11 @@
 
 <!-- ===== OVERRIDE LOG ===== -->
 <div class="admin-section">
-  <h2>Log on Behalf</h2>
+  <h2>{{ _("Log on Behalf") }}</h2>
   <form method="POST" action="/admin/log-on-behalf" class="inline-form">
     <div class="form-row">
       <div class="form-group">
-        <label>Member</label>
+        <label>{{ _("Member") }}</label>
         <select name="member_id" required>
           {% for m in active_members %}
           <option value="{{ m.id }}">{{ m.display_name }}</option>
@@ -199,7 +210,7 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Chore</label>
+        <label>{{ _("Chore") }}</label>
         <select name="chore_id" required>
           {% for c in active_chores %}
           <option value="{{ c.id }}">{{ c.icon }} {{ c.name }}</option>
@@ -208,7 +219,7 @@
       </div>
       <div class="form-group form-group-action">
         <label>&nbsp;</label>
-        <button type="submit" class="btn btn-primary">Log It</button>
+        <button type="submit" class="btn btn-primary">{{ _("Log It") }}</button>
       </div>
     </div>
   </form>
@@ -218,20 +229,20 @@
 <div class="modal-overlay" x-show="resetMemberId !== null" x-cloak @keydown.escape.window="resetMemberId = null">
   <div class="modal-card modal-sm" @click.stop>
     <div class="modal-header">
-      <h2>Reset Password</h2>
+      <h2>{{ _("Reset Password") }}</h2>
       <button class="modal-close" @click="resetMemberId = null">✕</button>
     </div>
     <div class="modal-body">
       <template x-if="resetMemberId !== null">
         <form :action="'/admin/members/' + resetMemberId + '/reset-password'" method="POST">
           <div class="form-group">
-            <label>New Temporary Password</label>
+            <label>{{ _("New Temporary Password") }}</label>
             <input name="new_password" type="password" required minlength="6" autofocus>
           </div>
-          <p class="hint">User will be required to change this on next login.</p>
+          <p class="hint">{{ _("User will be required to change this on next login.") }}</p>
           <div class="modal-actions">
-            <button type="button" class="btn btn-secondary" @click="resetMemberId = null">Cancel</button>
-            <button type="submit" class="btn btn-primary">Reset Password</button>
+            <button type="button" class="btn btn-secondary" @click="resetMemberId = null">{{ _("Cancel") }}</button>
+            <button type="submit" class="btn btn-primary">{{ _("Reset Password") }}</button>
           </div>
         </form>
       </template>
@@ -243,27 +254,35 @@
 <div class="modal-overlay" x-show="editChoreId !== null" x-cloak @keydown.escape.window="editChoreId = null">
   <div class="modal-card modal-sm" @click.stop>
     <div class="modal-header">
-      <h2>Edit Chore</h2>
+      <h2>{{ _("Edit Chore") }}</h2>
       <button class="modal-close" @click="editChoreId = null">✕</button>
     </div>
     <div class="modal-body">
       <template x-if="editChoreId !== null">
         <form :action="'/admin/chores/' + editChoreId + '/edit'" method="POST">
           <div class="form-group">
-            <label>Icon</label>
+            <label>{{ _("Icon") }}</label>
             <input name="icon" x-model="editChoreIcon" maxlength="4">
           </div>
           <div class="form-group">
-            <label>Name</label>
+            <label>{{ _("Name") }}</label>
             <input name="name" x-model="editChoreName" required>
           </div>
           <div class="form-group">
-            <label>Limit (hours)</label>
+            <label>Tên (Tiếng Việt)</label>
+            <input name="name_vi" x-model="editChoreNameVi">
+          </div>
+          <div class="form-group">
+            <label>{{ _("Limit (hours)") }}</label>
             <input name="limit_hours" type="number" x-model="editChoreHours" required min="1">
           </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea name="notes" x-model="editChoreNotes" rows="2"></textarea>
+          </div>
           <div class="modal-actions">
-            <button type="button" class="btn btn-secondary" @click="editChoreId = null">Cancel</button>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" class="btn btn-secondary" @click="editChoreId = null">{{ _("Cancel") }}</button>
+            <button type="submit" class="btn btn-primary">{{ _("Save Changes") }}</button>
           </div>
         </form>
       </template>
