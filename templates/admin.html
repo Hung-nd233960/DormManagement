@@ -117,6 +117,43 @@
   </details>
 </div>
 
+<!-- ===== TIEBREAK ORDER ===== -->
+<div class="admin-section">
+  <h2>Tiebreak Order</h2>
+  <p class="text-muted" style="margin-bottom:0.75rem">When members tie on deficit, whoever is higher on this list is recommended first. Drag to reorder, then save.</p>
+
+  {% set unranked = orderable_members | selectattr('tiebreak_order', 'equalto', 0) | list %}
+  {% if unranked %}
+  <div class="flash flash-warning" style="margin-bottom:0.75rem">
+    ⚠ Not yet ordered:
+    {% for m in unranked %}<strong>{{ m.display_name }}</strong>{% if not loop.last %}, {% endif %}{% endfor %}.
+    Drag them into position and save.
+  </div>
+  {% endif %}
+
+  {% if orderable_members %}
+  <form method="POST" action="/admin/members/reorder" id="reorder-form">
+    <input type="hidden" id="order-input" name="order">
+    <ul id="order-list" style="list-style:none;padding:0;margin:0 0 0.75rem;display:flex;flex-direction:column;gap:0.3rem;max-width:360px">
+      {% for member in orderable_members %}
+      <li draggable="true" data-member-id="{{ member.id }}"
+          style="display:flex;align-items:center;gap:0.6rem;padding:0.45rem 0.75rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;cursor:grab;user-select:none">
+        <span style="color:var(--text-muted,#9ca3af);letter-spacing:0.05em">⠿</span>
+        <img src="/avatar/{{ member.id }}" class="member-avatar-sm" alt="{{ member.display_name }}">
+        <span style="flex:1">{{ member.display_name }}</span>
+        {% if member.tiebreak_order == 0 %}
+        <span class="badge badge-inactive">Unranked</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    <button type="submit" class="btn btn-primary btn-sm">Save Order</button>
+  </form>
+  {% else %}
+  <p class="text-muted">No active non-admin members yet.</p>
+  {% endif %}
+</div>
+
 <!-- ===== CHORES ===== -->
 <div class="admin-section">
   <h2>{{ _("Chores") }}</h2>
@@ -291,4 +328,65 @@
 </div>
 
 </div><!-- x-data -->
+
+<script>
+(function () {
+  var list = document.getElementById('order-list');
+  var input = document.getElementById('order-input');
+  var form = document.getElementById('reorder-form');
+  if (!list || !input) return;
+
+  var dragging = null;
+
+  function syncInput() {
+    input.value = JSON.stringify(
+      Array.from(list.querySelectorAll('[data-member-id]')).map(function (el) {
+        return el.dataset.memberId;
+      })
+    );
+  }
+
+  list.addEventListener('dragstart', function (e) {
+    dragging = e.target.closest('[draggable]');
+    setTimeout(function () { if (dragging) dragging.style.opacity = '0.4'; }, 0);
+  });
+
+  list.addEventListener('dragend', function () {
+    if (dragging) dragging.style.opacity = '';
+    dragging = null;
+    syncInput();
+  });
+
+  list.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    if (!dragging) return;
+    var after = getAfterElement(e.clientY);
+    if (after) {
+      list.insertBefore(dragging, after);
+    } else {
+      list.appendChild(dragging);
+    }
+  });
+
+  function getAfterElement(y) {
+    var items = Array.from(list.querySelectorAll('[draggable]')).filter(function (el) {
+      return el !== dragging;
+    });
+    var closest = null;
+    var closestOffset = -Infinity;
+    items.forEach(function (el) {
+      var box = el.getBoundingClientRect();
+      var offset = y - box.top - box.height / 2;
+      if (offset < 0 && offset > closestOffset) {
+        closestOffset = offset;
+        closest = el;
+      }
+    });
+    return closest;
+  }
+
+  if (form) form.addEventListener('submit', syncInput);
+  syncInput();
+})();
+</script>
 {% endblock %}

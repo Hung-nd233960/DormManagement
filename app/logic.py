@@ -1,5 +1,4 @@
-import random
-from datetime import datetime, date
+from datetime import datetime
 from typing import Optional
 from sqlalchemy.orm import Session
 from .models import Member, Chore, ChoreState, ChoreLog
@@ -69,12 +68,8 @@ def get_recommendation(db: Session, chore: Chore) -> Optional[Member]:
         elif deficit == max_deficit:
             best.append(member)
 
-    if len(best) == 1:
-        return best[0]
-
-    # Stable daily tie-break
-    seed = hash(f"{chore.id}_{date.today().isoformat()}")
-    return random.Random(seed).choice(best)
+    # Tiebreak: explicit rank first (1 = highest), unranked (0) sorted last, then stable by id.
+    return min(best, key=lambda m: (m.tiebreak_order if m.tiebreak_order > 0 else float("inf"), m.id))
 
 
 def get_chore_urgency(db: Session, chore: Chore):

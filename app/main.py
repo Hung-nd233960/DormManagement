@@ -40,6 +40,8 @@ def _migrate():
             conn.execute(text("ALTER TABLE members ADD COLUMN is_sentinel BOOLEAN NOT NULL DEFAULT 0"))
         if "language" not in cols:
             conn.execute(text("ALTER TABLE members ADD COLUMN language VARCHAR NOT NULL DEFAULT 'en'"))
+        if "tiebreak_order" not in cols:
+            conn.execute(text("ALTER TABLE members ADD COLUMN tiebreak_order INTEGER NOT NULL DEFAULT 0"))
     chore_cols = [c["name"] for c in sa_inspect(engine).get_columns("chores")]
     with engine.begin() as conn:
         if "name_vi" not in chore_cols:

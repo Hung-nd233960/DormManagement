@@ -35,8 +35,12 @@ async def admin_page(
 ):
     members = db.query(Member).filter(Member.is_removed == False).order_by(Member.joined_at).all()
     chores = db.query(Chore).order_by(Chore.id).all()
-    active_members = [m for m in members if not m.is_removed]
+    active_members = [m for m in members if not m.is_removed and not m.is_admin and m.is_active]
     active_chores = [c for c in chores if c.is_active]
+    orderable_members = sorted(
+        [m for m in members if not m.is_removed and not m.is_admin and m.is_active],
+        key=lambda m: (m.tiebreak_order if m.tiebreak_order > 0 else float("inf"), m.id),
+    )
     return templates.TemplateResponse(
         request, "admin.html", {
             "user": user,
@@ -45,6 +49,7 @@ async def admin_page(
             "chores": chores,
             "active_members": active_members,
             "active_chores": active_chores,
+            "orderable_members": orderable_members,
         }
     )
 
@@ -256,6 +261,23 @@ async def log_on_behalf(
         _("Logged '%(chore)s' on behalf of %(member)s.") % {"chore": chore.name, "member": member.display_name},
         "success",
     )
+    return RedirectResponse(url="/admin", status_code=302)
+
+
+@router.post("/members/reorder")
+async def reorder_members(
+    request: Request,
+    order: str = Form(...),
+    user: Member = Depends(require_mutable_admin),
+    db: Session = Depends(get_db),
+):
+    import json
+    member_ids = json.loads(order)
+    for rank, member_id in enumerate(member_ids, start=1):
+        member = db.get(Member, int(member_id))
+        if member and not member.is_removed and not member.is_admin:
+            member.tiebreak_order = rank
+    db.commit()
     return RedirectResponse(url="/admin", status_code=302)
 
 

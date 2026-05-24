@@ -17,6 +17,7 @@ class Member(Base):
     force_password_change = Column(Boolean, default=True, nullable=False)
     is_sentinel = Column(Boolean, default=False, nullable=False)
     language = Column(String, default="en", nullable=False)
+    tiebreak_order = Column(Integer, default=0, nullable=False)
     joined_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     chore_states = relationship("ChoreState", back_populates="member", cascade="all, delete-orphan")
