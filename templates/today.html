@@ -21,10 +21,7 @@
         <span class="all-done-icon">✓</span> {{ _("All your recommended chores are done!") }}
       {% endif %}
     </div>
-    <button
-      class="btn btn-white {% if pending_count == 0 %}btn-disabled{% endif %}"
-      {% if pending_count > 0 %}@click="modalOpen = true"{% else %}disabled{% endif %}
-    >
+    <button class="btn btn-white" @click="modalOpen = true">
       {{ _("I did it!") }}
     </button>
   </div>
